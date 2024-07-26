@@ -1,13 +1,60 @@
-[gd_scene load_steps=3 format=3 uid="uid://cr6qkt0sfbibr"]
+[gd_scene load_steps=5 format=3 uid="uid://cr6qkt0sfbibr"]
 
 [ext_resource type="Script" path="res://scripts/game.gd" id="1_njtx6"]
 [ext_resource type="PackedScene" uid="uid://b7ehng3d3bhkr" path="res://scenes/player.tscn" id="1_wvhut"]
+[ext_resource type="PackedScene" uid="uid://c2pu86obylva3" path="res://scenes/hud.tscn" id="2_p2jkn"]
+[ext_resource type="PackedScene" uid="uid://bxiq30cjpqphu" path="res://scenes/asteroid.tscn" id="3_ueuon"]
 
 [node name="Game" type="Node2D"]
 position = Vector2(-2, 0)
 script = ExtResource("1_njtx6")
 
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="HUD" parent="UI" instance=ExtResource("2_p2jkn")]
+
 [node name="Player" parent="." instance=ExtResource("1_wvhut")]
 position = Vector2(642, 350)
 
 [node name="Lasers" type="Node" parent="."]
+
+[node name="Asteroids" type="Node" parent="."]
+
+[node name="Asteroid" parent="Asteroids" instance=ExtResource("3_ueuon")]
+position = Vector2(329, 398)
+rotation = -2.35619
+
+[node name="Asteroid2" parent="Asteroids" instance=ExtResource("3_ueuon")]
+position = Vector2(177, 180)
+rotation = 2.66448e-05
+
+[node name="Asteroid9" parent="Asteroids" instance=ExtResource("3_ueuon")]
+position = Vector2(177, 180)
+rotation = 2.66448e-05
+
+[node name="Asteroid3" parent="Asteroids" instance=ExtResource("3_ueuon")]
+position = Vector2(677, 578)
+rotation = -0.785388
+
+[node name="Asteroid4" parent="Asteroids" instance=ExtResource("3_ueuon")]
+position = Vector2(862.072, 228.791)
+rotation = 0.785415
+
+[node name="Asteroid5" parent="Asteroids" instance=ExtResource("3_ueuon")]
+position = Vector2(627, 217)
+rotation = 2.35622
+
+[node name="Asteroid6" parent="Asteroids" instance=ExtResource("3_ueuon")]
+position = Vector2(261, 565)
+rotation = -1.57078
+
+[node name="Asteroid7" parent="Asteroids" instance=ExtResource("3_ueuon")]
+position = Vector2(1191.07, 626.796)
+rotation = -3.14158
+
+[node name="Asteroid8" parent="Asteroids" instance=ExtResource("3_ueuon")]
+position = Vector2(775, 134)
+rotation = 1.5708
+
+[node name="PlayerSpawn" type="Node2D" parent="."]
+position = Vector2(641, 348)
