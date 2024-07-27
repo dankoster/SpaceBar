@@ -10,6 +10,8 @@ signal spawned(player)
 
 @onready var gun = $Gun
 @onready var sprite = $Sprite2D
+@onready var explodeSound = $Explode
+@onready var laserSound = $Laser
 
 var shotCooldown := false
 var shotRate := 0.15
@@ -21,6 +23,8 @@ func _ready():
 	pass
 
 func _process(_delta):
+	if !isAlive: return
+	
 	if Input.is_action_pressed("shoot"):
 		if !shotCooldown: 
 			shotCooldown = true
@@ -30,13 +34,17 @@ func _process(_delta):
 
 
 func shoot_laser(): 
+	assert(isAlive, "tried to shoot a laser while !isAlive")
 	var l = laser_scene.instantiate()
 	l.global_position = gun.global_position
 	l.rotation = rotation
+	laserSound.play()
 	emit_signal("laser_shot", l)
 
 
 func _physics_process(delta):
+	if !isAlive: return
+		
 	var inputVector := Vector2(0, Input.get_axis("move_forward", "move_backward"))
 	
 	velocity += inputVector.rotated(rotation) * acceleration
@@ -70,14 +78,15 @@ func explode():
 	#TODO: explosion!
 	isAlive = false
 	sprite.visible = false
-	process_mode = Node.PROCESS_MODE_DISABLED
+	$CollisionShape2D.set_deferred("disabled", true)
+	explodeSound.play()
 	emit_signal("died", self)
 
 
-func respawn(position):
+func respawn(pos):
 	assert(!isAlive, "tried to respawn while isAlive")
 	isAlive = true
 	sprite.visible = true
-	global_position = position
-	process_mode = Node.PROCESS_MODE_INHERIT
+	global_position = pos
+	$CollisionShape2D.set_deferred("disabled", false)
 	emit_signal("spawned", self)

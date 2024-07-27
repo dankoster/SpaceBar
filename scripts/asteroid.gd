@@ -11,16 +11,20 @@ var speed := 50.0
 @onready var cshape = $CollisionShape2D
 
 func explode():
-	queue_free()
 	match size: 
 		AsteroidSize.LARGE:
+			$ExplodeSoundLg.play()
 			spawnSiblingInParent(AsteroidSize.MEDIUM)
 			spawnSiblingInParent(AsteroidSize.MEDIUM)
 		AsteroidSize.MEDIUM:
+			$ExplodeSoundMd.play()
 			spawnSiblingInParent(AsteroidSize.SMALL)
 			spawnSiblingInParent(AsteroidSize.SMALL)
-			
+		AsteroidSize.SMALL:
+			$ExplodeSoundSm.play()
+
 	Events.emit_signal("AsteroidExploded", self)
+	queue_free()
 
 
 func spawnSiblingInParent(siblingSize):

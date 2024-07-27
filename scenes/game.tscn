@@ -1,9 +1,14 @@
-[gd_scene load_steps=5 format=3 uid="uid://cr6qkt0sfbibr"]
+[gd_scene load_steps=8 format=3 uid="uid://cr6qkt0sfbibr"]
 
 [ext_resource type="Script" path="res://scripts/game.gd" id="1_njtx6"]
 [ext_resource type="PackedScene" uid="uid://b7ehng3d3bhkr" path="res://scenes/player.tscn" id="1_wvhut"]
 [ext_resource type="PackedScene" uid="uid://c2pu86obylva3" path="res://scenes/hud.tscn" id="2_p2jkn"]
+[ext_resource type="PackedScene" uid="uid://u4ojjo6k7ik6" path="res://game_over_screen.tscn" id="3_hk544"]
 [ext_resource type="PackedScene" uid="uid://bxiq30cjpqphu" path="res://scenes/asteroid.tscn" id="3_ueuon"]
+[ext_resource type="Script" path="res://scripts/PlayerSpawn.gd" id="5_0du2r"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_52xjr"]
+radius = 136.059
 
 [node name="Game" type="Node2D"]
 position = Vector2(-2, 0)
@@ -12,6 +17,9 @@ script = ExtResource("1_njtx6")
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="HUD" parent="UI" instance=ExtResource("2_p2jkn")]
+
+[node name="GameOverScreen" parent="UI" instance=ExtResource("3_hk544")]
+visible = false
 
 [node name="Player" parent="." instance=ExtResource("1_wvhut")]
 position = Vector2(642, 350)
@@ -56,5 +64,11 @@ rotation = -3.14158
 position = Vector2(775, 134)
 rotation = 1.5708
 
-[node name="PlayerSpawn" type="Node2D" parent="."]
+[node name="PlayerSpawn" type="Area2D" parent="."]
 position = Vector2(641, 348)
+collision_mask = 12
+script = ExtResource("5_0du2r")
+
+[node name="CollisionShape2d" type="CollisionShape2D" parent="PlayerSpawn"]
+position = Vector2(1, 1)
+shape = SubResource("CircleShape2D_52xjr")

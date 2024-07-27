@@ -1,8 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://bxiq30cjpqphu"]
+[gd_scene load_steps=7 format=3 uid="uid://bxiq30cjpqphu"]
 
 [ext_resource type="Script" path="res://scripts/asteroid.gd" id="1_03atf"]
 [ext_resource type="Texture2D" uid="uid://dr2xhs8obodv4" path="res://assets/kenney_space-shooter-redux/PNG/Meteors/meteorGrey_big1.png" id="1_rgwg1"]
 [ext_resource type="Shape2D" uid="uid://c72yeyknys6u4" path="res://resources/asteroid_large_cshape.tres" id="3_5o3yn"]
+[ext_resource type="AudioStream" uid="uid://n5hnppgyuixb" path="res://assets/sounds/impactMetal_001.wav" id="4_nm4lc"]
+[ext_resource type="AudioStream" uid="uid://sk3t1aghjnyd" path="res://assets/sounds/impactMetal_002.wav" id="5_13f2m"]
+[ext_resource type="AudioStream" uid="uid://cd88f6yqv6o4p" path="res://assets/sounds/impactMetal_000.wav" id="6_i4xtp"]
 
 [node name="Asteroid" type="Area2D"]
 collision_layer = 4
@@ -14,6 +17,21 @@ texture = ExtResource("1_rgwg1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = ExtResource("3_5o3yn")
+
+[node name="ExplodeSoundSm" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_nm4lc")
+volume_db = 4.388
+pitch_scale = 0.01
+
+[node name="ExplodeSoundMd" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_13f2m")
+volume_db = 1.755
+pitch_scale = 0.01
+
+[node name="ExplodeSoundLg" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_i4xtp")
+volume_db = 8.777
+pitch_scale = 0.01
 
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
