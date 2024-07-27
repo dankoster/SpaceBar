@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cr6qkt0sfbibr"]
+[gd_scene load_steps=11 format=3 uid="uid://cr6qkt0sfbibr"]
 
 [ext_resource type="Script" path="res://scripts/game.gd" id="1_njtx6"]
 [ext_resource type="PackedScene" uid="uid://b7ehng3d3bhkr" path="res://scenes/player.tscn" id="1_wvhut"]
@@ -6,6 +6,40 @@
 [ext_resource type="PackedScene" uid="uid://u4ojjo6k7ik6" path="res://game_over_screen.tscn" id="3_hk544"]
 [ext_resource type="PackedScene" uid="uid://bxiq30cjpqphu" path="res://scenes/asteroid.tscn" id="3_ueuon"]
 [ext_resource type="Script" path="res://scripts/PlayerSpawn.gd" id="5_0du2r"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ywpte"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(1, 400, 1)
+direction = Vector3(-1, 0, 0)
+spread = 0.0
+initial_velocity_min = 10.0
+initial_velocity_max = 15.0
+gravity = Vector3(0, 0, 0)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_oxtg6"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(1, 400, 1)
+direction = Vector3(-1, 0, 0)
+spread = 0.0
+initial_velocity_min = 20.0
+initial_velocity_max = 25.0
+gravity = Vector3(0, 0, 0)
+scale_min = 2.0
+scale_max = 2.0
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_rvua6"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(1, 400, 1)
+direction = Vector3(-1, 0, 0)
+spread = 0.0
+initial_velocity_min = 40.0
+initial_velocity_max = 45.0
+gravity = Vector3(0, 0, 0)
+scale_min = 3.0
+scale_max = 5.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_52xjr"]
 radius = 136.059
@@ -21,8 +55,34 @@ script = ExtResource("1_njtx6")
 [node name="GameOverScreen" parent="UI" instance=ExtResource("3_hk544")]
 visible = false
 
-[node name="Player" parent="." instance=ExtResource("1_wvhut")]
-position = Vector2(642, 350)
+[node name="Background" type="Node" parent="."]
+
+[node name="StarfieldBack1" type="GPUParticles2D" parent="Background"]
+z_index = -1
+position = Vector2(1316, 346)
+amount = 400
+process_material = SubResource("ParticleProcessMaterial_ywpte")
+lifetime = 400.0
+preprocess = 144.0
+speed_scale = 1.77
+
+[node name="StarfieldBack2" type="GPUParticles2D" parent="Background"]
+z_index = -1
+position = Vector2(1316, 346)
+amount = 400
+process_material = SubResource("ParticleProcessMaterial_oxtg6")
+lifetime = 400.0
+preprocess = 144.0
+speed_scale = 1.77
+
+[node name="StarfieldBack3" type="GPUParticles2D" parent="Background"]
+z_index = -1
+position = Vector2(1316, 346)
+amount = 10
+process_material = SubResource("ParticleProcessMaterial_rvua6")
+lifetime = 400.0
+preprocess = 144.0
+speed_scale = 1.77
 
 [node name="Lasers" type="Node" parent="."]
 
@@ -63,6 +123,9 @@ rotation = -3.14158
 [node name="Asteroid8" parent="Asteroids" instance=ExtResource("3_ueuon")]
 position = Vector2(775, 134)
 rotation = 1.5708
+
+[node name="Player" parent="." instance=ExtResource("1_wvhut")]
+position = Vector2(642, 350)
 
 [node name="PlayerSpawn" type="Area2D" parent="."]
 position = Vector2(641, 348)

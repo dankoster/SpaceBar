@@ -19,9 +19,6 @@ var isAlive := true
 
 var laser_scene = preload("res://scenes/laser.tscn")
 
-func _ready():
-	pass
-
 func _process(_delta):
 	if !isAlive: return
 	

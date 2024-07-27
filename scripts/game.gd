@@ -23,17 +23,26 @@ func _ready():
 	gameOver.visible = false
 	score = 0
 	lives = 3
-	playerSpawn.global_position = get_viewport_rect().size/2
 	player.connect("laser_shot", onPlayerShotLaser)
 	player.connect("died", onPlayerDied)
 	Events.connect("AsteroidExploded", onAsteroidExploded)
 	Events.connect("AsteroidHitBody", onAsteroidHitBody)
+	get_viewport().connect("size_changed", initLayout)
+	initLayout()
 
 
 func _process(_delta):
 	if Input.is_action_just_pressed("reset"):
 		get_tree().reload_current_scene()
 
+
+func initLayout():
+	var rect = get_viewport_rect()
+	playerSpawn.global_position = rect.size/2
+	for b in $Background.get_children():
+		b.global_position = Vector2(rect.size.x, rect.size.y/2)
+		b.process_material.emission_box_extents = Vector3(1, rect.size.y/2, 1)
+		b.amount = (rect.size.y/2) / b.process_material.scale.x
 
 func onAsteroidHitBody(asteroid, target):
 	asteroid.explode()
@@ -60,4 +69,3 @@ func onPlayerDied(p: Player):
 	else: 
 		await get_tree().create_timer(3).timeout 
 		gameOver.visible = true
-

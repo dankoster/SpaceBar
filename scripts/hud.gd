@@ -15,4 +15,3 @@ var uiLife = preload("res://scenes/ui_life.tscn")
 			lives.get_child(count).queue_free()
 		while count < value:
 			lives.add_child(uiLife.instantiate())
-
