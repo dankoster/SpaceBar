@@ -1,4 +1,4 @@
-class_name Player extends CharacterBody2D
+class_name Player extends RigidBody2D
 
 signal laser_shot(laser)
 signal died(player)
@@ -6,7 +6,7 @@ signal spawned(player)
 
 @export var acceleration := 10.0
 @export var maxSpeed := 550
-@export var rotation_speed := 250.0
+@export var rotation_speed := 10.0
 
 @onready var gun = $Gun
 @onready var sprite = $Sprite2D
@@ -28,6 +28,17 @@ func _process(_delta):
 			shoot_laser()
 			await get_tree().create_timer(shotRate).timeout
 			shotCooldown = false
+	
+	if Input.is_action_pressed("rotate_right"):
+		apply_torque_impulse(rotation_speed)
+	if Input.is_action_pressed("rotate_left"):
+		apply_torque_impulse(-rotation_speed)
+	
+	if Input.is_action_pressed("move_forward"):
+		var inputVector := Vector2(0, Input.get_axis("move_forward", "move_backward"))
+		apply_impulse(inputVector.rotated(rotation) * acceleration)
+
+
 
 
 func shoot_laser(): 
@@ -36,27 +47,11 @@ func shoot_laser():
 	l.global_position = gun.global_position
 	l.rotation = rotation
 	laserSound.play()
-	emit_signal("laser_shot", l)
+	laser_shot.emit(l)
 
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	if !isAlive: return
-		
-	var inputVector := Vector2(0, Input.get_axis("move_forward", "move_backward"))
-	
-	velocity += inputVector.rotated(rotation) * acceleration
-	velocity = velocity.limit_length(maxSpeed)
-	
-	if Input.is_action_pressed("rotate_right"):
-		rotate(deg_to_rad(rotation_speed * delta))
-	if Input.is_action_pressed("rotate_left"):
-		rotate(deg_to_rad(-rotation_speed * delta))
-	
-	if inputVector.y == 0: 
-		#decrease speed incrementally when no accelleration button pressed
-		velocity = velocity.move_toward(Vector2.ZERO, 3)
-		
-	move_and_slide()
 	
 	#teleoprt to the other side of the screen when you go off the edge
 	var screenSize = get_viewport_rect().size
@@ -72,12 +67,12 @@ func _physics_process(delta):
 
 func explode():
 	assert(isAlive, "tried to explode while !isAlive")
-	#TODO: explosion!
+	#TODO: explosion vfx!
 	isAlive = false
 	sprite.visible = false
 	$CollisionShape2D.set_deferred("disabled", true)
 	explodeSound.play()
-	emit_signal("died", self)
+	died.emit(self)
 
 
 func respawn(pos):
@@ -86,4 +81,4 @@ func respawn(pos):
 	sprite.visible = true
 	global_position = pos
 	$CollisionShape2D.set_deferred("disabled", false)
-	emit_signal("spawned", self)
+	spawned.emit(self)

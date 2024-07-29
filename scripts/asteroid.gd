@@ -1,4 +1,4 @@
-class_name Asteroid extends Area2D
+class_name Asteroid extends RigidBody2D
 
 var movementVector := Vector2(0,-1)
 
@@ -23,7 +23,7 @@ func explode():
 		AsteroidSize.SMALL:
 			$ExplodeSoundSm.play()
 
-	Events.emit_signal("AsteroidExploded", self)
+	Events.AsteroidExploded.emit(self)
 	queue_free()
 
 
@@ -34,7 +34,7 @@ func spawnSiblingInParent(siblingSize):
 	get_parent().call_deferred("add_child", a)
 
 
-func _ready():
+func _ready():	
 	rotation = randf_range(0, 2*PI)
 	
 	match size:
@@ -53,7 +53,7 @@ func _ready():
 
 
 func _physics_process(delta):
-	global_position += movementVector.rotated(rotation) * speed * delta
+	#global_position += movementVector.rotated(rotation) * speed * delta
 	
 	#teleoprt to the other side of the screen when you go off the edge
 	var radius = cshape.shape.radius
@@ -73,8 +73,8 @@ func _on_area_entered(area):
 		area.queue_free()
 		explode()
 	else:
-		Events.emit_signal("AsteroidHitArea", self, area)
+		Events.AsteroidHitArea.emit(self, area)
 
 
-func _on_body_entered(body):
-	Events.emit_signal("AsteroidHitBody", self, body)
+func _on_area_2d_body_entered(body):
+	Events.AsteroidHitBody.emit(self, body)
