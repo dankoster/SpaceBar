@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://bxiq30cjpqphu"]
+[gd_scene load_steps=9 format=3 uid="uid://bxiq30cjpqphu"]
 
 [ext_resource type="Script" path="res://scripts/asteroid.gd" id="1_03atf"]
 [ext_resource type="Texture2D" uid="uid://dr2xhs8obodv4" path="res://assets/kenney_space-shooter-redux/PNG/Meteors/meteorGrey_big1.png" id="1_rgwg1"]
@@ -7,20 +7,33 @@
 [ext_resource type="AudioStream" uid="uid://sk3t1aghjnyd" path="res://assets/sounds/impactMetal_002.wav" id="5_13f2m"]
 [ext_resource type="AudioStream" uid="uid://cd88f6yqv6o4p" path="res://assets/sounds/impactMetal_000.wav" id="6_i4xtp"]
 
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_iswap"]
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_k7raa"]
+cull_mode = 1
+polygon = PackedVector2Array(-34, -43, -52, 10, -22, 43, 10, 31, 35, 35, 52, -1, 24, -43)
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_ndwjt"]
 light_mode = 2
 
 [node name="Asteroid" type="RigidBody2D"]
-material = SubResource("CanvasItemMaterial_iswap")
+light_mask = 2
+visibility_layer = 2
 collision_layer = 7
 collision_mask = 15
+mass = 100.0
 script = ExtResource("1_03atf")
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="."]
+occluder = SubResource("OccluderPolygon2D_k7raa")
+occluder_light_mask = 3
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 light_mask = 2
+visibility_layer = 2
+material = SubResource("CanvasItemMaterial_ndwjt")
 texture = ExtResource("1_rgwg1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 shape = ExtResource("3_5o3yn")
 
 [node name="ExplodeSoundSm" type="AudioStreamPlayer" parent="."]
@@ -37,5 +50,9 @@ pitch_scale = 0.01
 stream = ExtResource("6_i4xtp")
 volume_db = 8.777
 pitch_scale = 0.01
+
+[node name="DirectionalLight2D" type="DirectionalLight2D" parent="."]
+editor_only = true
+blend_mode = 2
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

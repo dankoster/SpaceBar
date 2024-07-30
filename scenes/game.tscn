@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://cr6qkt0sfbibr"]
+[gd_scene load_steps=13 format=3 uid="uid://cr6qkt0sfbibr"]
 
 [ext_resource type="Script" path="res://scripts/game.gd" id="1_njtx6"]
 [ext_resource type="PackedScene" uid="uid://b7ehng3d3bhkr" path="res://scenes/player.tscn" id="1_wvhut"]
@@ -6,6 +6,9 @@
 [ext_resource type="PackedScene" uid="uid://u4ojjo6k7ik6" path="res://game_over_screen.tscn" id="3_hk544"]
 [ext_resource type="PackedScene" uid="uid://bxiq30cjpqphu" path="res://scenes/asteroid.tscn" id="3_ueuon"]
 [ext_resource type="Script" path="res://scripts/PlayerSpawn.gd" id="5_0du2r"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_52xjr"]
+radius = 136.059
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ywpte"]
 particle_flag_disable_z = true
@@ -41,8 +44,11 @@ gravity = Vector3(0, 0, 0)
 scale_min = 3.0
 scale_max = 5.0
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_52xjr"]
-radius = 136.059
+[sub_resource type="Gradient" id="Gradient_k1ev1"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_o0ort"]
+gradient = SubResource("Gradient_k1ev1")
 
 [node name="Game" type="Node2D"]
 position = Vector2(-2, 0)
@@ -55,10 +61,20 @@ script = ExtResource("1_njtx6")
 [node name="GameOverScreen" parent="UI" instance=ExtResource("3_hk544")]
 visible = false
 
+[node name="PlayerSpawn" type="Area2D" parent="."]
+visible = false
+position = Vector2(1637, 257)
+collision_mask = 12
+script = ExtResource("5_0du2r")
+
+[node name="CollisionShape2d" type="CollisionShape2D" parent="PlayerSpawn"]
+visible = false
+position = Vector2(0, 1)
+shape = SubResource("CircleShape2D_52xjr")
+
 [node name="Starfield" type="Node" parent="."]
 
 [node name="StarfieldBack1" type="GPUParticles2D" parent="Starfield"]
-visible = false
 z_index = -1
 position = Vector2(1316, 346)
 emitting = false
@@ -69,7 +85,6 @@ preprocess = 144.0
 speed_scale = 1.77
 
 [node name="StarfieldBack2" type="GPUParticles2D" parent="Starfield"]
-visible = false
 z_index = -1
 position = Vector2(1316, 346)
 emitting = false
@@ -80,7 +95,6 @@ preprocess = 144.0
 speed_scale = 1.77
 
 [node name="StarfieldBack3" type="GPUParticles2D" parent="Starfield"]
-visible = false
 z_index = -1
 position = Vector2(1316, 346)
 emitting = false
@@ -92,29 +106,29 @@ speed_scale = 1.77
 
 [node name="Lasers" type="Node" parent="."]
 
-[node name="DampedSpringJoint2D" type="DampedSpringJoint2D" parent="."]
-position = Vector2(1017, 251)
-bias = 0.5
-length = 300.0
-rest_length = 300.0
-stiffness = 10.0
-damping = 16.0
-
-[node name="Player" parent="." instance=ExtResource("1_wvhut")]
-position = Vector2(1017, 251)
-
 [node name="Asteroids" type="Node" parent="."]
 
 [node name="Asteroid" parent="Asteroids" instance=ExtResource("3_ueuon")]
-position = Vector2(1015, 549)
-mass = 10.491
+position = Vector2(923, 611)
 
-[node name="PlayerSpawn" type="Area2D" parent="."]
-position = Vector2(938, 567)
-collision_mask = 12
-script = ExtResource("5_0du2r")
+[node name="Asteroid2" parent="Asteroids" instance=ExtResource("3_ueuon")]
+position = Vector2(703, 897)
 
-[node name="CollisionShape2d" type="CollisionShape2D" parent="PlayerSpawn"]
-visible = false
-position = Vector2(0, 1)
-shape = SubResource("CircleShape2D_52xjr")
+[node name="Asteroid3" parent="Asteroids" instance=ExtResource("3_ueuon")]
+position = Vector2(648, 660)
+
+[node name="Asteroid4" parent="Asteroids" instance=ExtResource("3_ueuon")]
+position = Vector2(373, 923)
+
+[node name="Player" parent="." instance=ExtResource("1_wvhut")]
+position = Vector2(1145, 467)
+
+[node name="PointLight2D" type="PointLight2D" parent="Player"]
+scale = Vector2(15, 15)
+blend_mode = 2
+range_item_cull_mask = 2
+shadow_enabled = true
+shadow_item_cull_mask = 2
+texture = SubResource("GradientTexture2D_o0ort")
+texture_scale = 10.0
+height = 500.0

@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://do7elnhwjt6h1"]
+
+[ext_resource type="Script" path="res://scenes/tractor_beam.gd" id="1_lyqrt"]
+[ext_resource type="PackedScene" uid="uid://bmm2ciopmoowv" path="res://vfx/laserBeam/laserBeam.tscn" id="2_eeqrx"]
+
+[node name="TractorBeam" type="Node2D"]
+script = ExtResource("1_lyqrt")
+
+[node name="LaserBeam2D" parent="." instance=ExtResource("2_eeqrx")]
+
+[node name="DampedSpringJoint2D" type="DampedSpringJoint2D" parent="."]
+bias = 0.5
+length = 300.0
+rest_length = 300.0
+stiffness = 10.0
+damping = 16.0

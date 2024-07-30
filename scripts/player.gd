@@ -24,9 +24,12 @@ func _process(_delta):
 	
 	if Input.is_action_just_pressed("shoot"): 
 		$LaserBeam2D.is_casting = true
+		$DampedSpringJoint2D.node_b = target.get_path()
+		
+
 	if Input.is_action_just_released("shoot"): 
 		$LaserBeam2D.is_casting = false
-	
+		$DampedSpringJoint2D.node_b = ""
 	
 	#if Input.is_action_pressed("shoot"):
 		#if !shotCooldown: 
@@ -45,8 +48,6 @@ func _process(_delta):
 		apply_impulse(inputVector.rotated(rotation) * acceleration)
 
 
-
-
 func shoot_laser(): 
 	assert(isAlive, "tried to shoot a laser while !isAlive")
 	var l = laser_scene.instantiate()
@@ -55,10 +56,35 @@ func shoot_laser():
 	laserSound.play()
 	laser_shot.emit(l)
 
+func nearestNode(nodes: Array[Node]) -> Node:
+	var nearest: Asteroid = null
+	var nearestDist: float
+	for a in nodes:
+		var d = global_position.distance_to(a.global_position)
+		if nearest == null || d < nearestDist: 
+			nearest = a
+			nearestDist = d
+	return nearest
+
+var target: PhysicsBody2D
+
 
 func _physics_process(_delta):
 	if !isAlive: return
 	
+	#TODO: Always face direction of travel
+	# accelerate in direction of travel
+	# wait until the player is moving tangental
+	# to the target object before attaching the spring
+	
+	#only need to change the target sometimes
+	if !target || !$LaserBeam2D.is_casting:
+		target = nearestNode(get_parent().asteroids.get_children())
+
+	#always look at the target when we move
+	$LaserBeam2D.look_at(target.global_position)
+	$DampedSpringJoint2D.look_at(target.global_position)
+
 	#teleoprt to the other side of the screen when you go off the edge
 	var screenSize = get_viewport_rect().size
 	if global_position.y < 0: 

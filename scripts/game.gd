@@ -28,7 +28,7 @@ func _ready():
 	Events.connect("AsteroidExploded", onAsteroidExploded)
 	Events.connect("AsteroidHitBody", onAsteroidHitBody)
 	get_viewport().connect("size_changed", initLayout)
-	initLayout(0)
+	initLayout(15)
 
 
 func _process(_delta):
