@@ -1,11 +1,10 @@
-[gd_scene load_steps=12 format=3 uid="uid://cr6qkt0sfbibr"]
+[gd_scene load_steps=11 format=3 uid="uid://cr6qkt0sfbibr"]
 
 [ext_resource type="Script" path="res://scripts/game.gd" id="1_njtx6"]
 [ext_resource type="PackedScene" uid="uid://b7ehng3d3bhkr" path="res://scenes/player.tscn" id="1_wvhut"]
 [ext_resource type="PackedScene" uid="uid://c2pu86obylva3" path="res://scenes/hud.tscn" id="2_p2jkn"]
 [ext_resource type="PackedScene" uid="uid://u4ojjo6k7ik6" path="res://game_over_screen.tscn" id="3_hk544"]
 [ext_resource type="PackedScene" uid="uid://bxiq30cjpqphu" path="res://scenes/asteroid.tscn" id="3_ueuon"]
-[ext_resource type="Texture2D" uid="uid://dxydd8n3twtkw" path="res://assets/JWST-NGC-3324.png" id="4_swqec"]
 [ext_resource type="Script" path="res://scripts/PlayerSpawn.gd" id="5_0du2r"]
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ywpte"]
@@ -90,12 +89,6 @@ process_material = SubResource("ParticleProcessMaterial_rvua6")
 lifetime = 400.0
 preprocess = 144.0
 speed_scale = 1.77
-
-[node name="JWST" type="Sprite2D" parent="."]
-visible = false
-position = Vector2(-6, 1368)
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("4_swqec")
 
 [node name="Lasers" type="Node" parent="."]
 
