@@ -22,12 +22,18 @@ var laser_scene = preload("res://scenes/laser.tscn")
 func _process(_delta):
 	if !isAlive: return
 	
-	if Input.is_action_pressed("shoot"):
-		if !shotCooldown: 
-			shotCooldown = true
-			shoot_laser()
-			await get_tree().create_timer(shotRate).timeout
-			shotCooldown = false
+	if Input.is_action_just_pressed("shoot"): 
+		$LaserBeam2D.is_casting = true
+	if Input.is_action_just_released("shoot"): 
+		$LaserBeam2D.is_casting = false
+	
+	
+	#if Input.is_action_pressed("shoot"):
+		#if !shotCooldown: 
+			#shotCooldown = true
+			#shoot_laser()
+			#await get_tree().create_timer(shotRate).timeout
+			#shotCooldown = false
 	
 	if Input.is_action_pressed("rotate_right"):
 		apply_torque_impulse(rotation_speed)

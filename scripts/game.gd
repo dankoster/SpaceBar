@@ -40,7 +40,7 @@ var asteroid_scene = preload("res://scenes/asteroid.tscn")
 func initLayout(numAsteroids: int):
 	var rect = get_viewport_rect()
 	playerSpawn.global_position = rect.size/2
-	player.global_position = playerSpawn.global_position
+	#player.global_position = playerSpawn.global_position
 	for b in $Starfield.get_children():
 		b.global_position = Vector2(rect.size.x, rect.size.y/2)
 		b.process_material.emission_box_extents = Vector3(1, rect.size.y/2, 1)

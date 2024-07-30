@@ -12,7 +12,7 @@ light_mode = 2
 
 [node name="Asteroid" type="RigidBody2D"]
 material = SubResource("CanvasItemMaterial_iswap")
-collision_layer = 4
+collision_layer = 7
 collision_mask = 15
 script = ExtResource("1_03atf")
 
@@ -21,7 +21,6 @@ light_mask = 2
 texture = ExtResource("1_rgwg1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-visible = false
 shape = ExtResource("3_5o3yn")
 
 [node name="ExplodeSoundSm" type="AudioStreamPlayer" parent="."]

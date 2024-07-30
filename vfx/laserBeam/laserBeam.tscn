@@ -1,0 +1,110 @@
+[gd_scene load_steps=14 format=3 uid="uid://bmm2ciopmoowv"]
+
+[ext_resource type="Script" path="res://VFX/LaserBeam/LaserBeam.gd" id="1"]
+
+[sub_resource type="Gradient" id="Gradient_sstk7"]
+offsets = PackedFloat32Array(0.461347, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_hw410"]
+gradient = SubResource("Gradient_sstk7")
+
+[sub_resource type="Curve" id="Curve_8x61c"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.51634, 1), 0.0, 0.0, 0, 0, Vector2(0.995643, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_xj7cq"]
+curve = SubResource("Curve_8x61c")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_w4nhb"]
+particle_flag_disable_z = true
+initial_velocity_min = 50.0
+initial_velocity_max = 150.0
+gravity = Vector3(0, 0, 0)
+scale_curve = SubResource("CurveTexture_xj7cq")
+color_ramp = SubResource("GradientTexture1D_hw410")
+
+[sub_resource type="Gradient" id="Gradient_0uo60"]
+offsets = PackedFloat32Array(0.303226, 0.488172)
+colors = PackedColorArray(0.368588, 0.626113, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_2gymk"]
+gradient = SubResource("Gradient_0uo60")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.608974, 0.33547)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_dyomp"]
+particle_flag_disable_z = true
+initial_velocity_min = 100.0
+initial_velocity_max = 200.0
+gravity = Vector3(0, 0, 0)
+scale_curve = SubResource("CurveTexture_xj7cq")
+color_ramp = SubResource("GradientTexture1D_hw410")
+
+[sub_resource type="Curve" id="Curve_vefjk"]
+min_value = -10.0
+max_value = 10.0
+bake_resolution = 10
+_data = [Vector2(0, 9.94077), 0.0, 1.4, 0, 0, Vector2(1, -9.78132), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_qxa45"]
+width = 100
+curve = SubResource("Curve_vefjk")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_jhgd8"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(300, 10, 1)
+orbit_velocity_min = -0.0949999
+orbit_velocity_max = 0.0950001
+radial_velocity_min = -100.0
+radial_velocity_max = -50.0
+gravity = Vector3(0, 0, 0)
+tangential_accel_curve = SubResource("CurveTexture_qxa45")
+scale_curve = SubResource("CurveTexture_xj7cq")
+color_ramp = SubResource("GradientTexture1D_hw410")
+turbulence_noise_strength = 18.42
+
+[sub_resource type="Environment" id="Environment_el3qe"]
+background_mode = 3
+glow_enabled = true
+
+[node name="LaserBeam2D" type="RayCast2D"]
+hit_from_inside = true
+script = ExtResource("1")
+
+[node name="FillLine2D" type="Line2D" parent="."]
+modulate = Color(1.5, 1.5, 1.5, 1)
+points = PackedVector2Array(0, 0, 41, 0)
+default_color = Color(0.46021, 0.66184, 1, 1)
+texture_mode = 2
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2
+sharp_limit = 8.0
+antialiased = true
+
+[node name="CastingParticles2D" type="GPUParticles2D" parent="."]
+emitting = false
+amount = 15
+process_material = SubResource("ParticleProcessMaterial_w4nhb")
+texture = SubResource("GradientTexture2D_2gymk")
+
+[node name="CollisionParticles2D" type="GPUParticles2D" parent="."]
+position = Vector2(761, 0)
+emitting = false
+amount = 15
+process_material = SubResource("ParticleProcessMaterial_dyomp")
+texture = SubResource("GradientTexture2D_2gymk")
+
+[node name="BeamParticles2D" type="GPUParticles2D" parent="."]
+position = Vector2(365, 0)
+emitting = false
+amount = 50
+process_material = SubResource("ParticleProcessMaterial_jhgd8")
+texture = SubResource("GradientTexture2D_2gymk")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_el3qe")

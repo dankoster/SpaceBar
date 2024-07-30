@@ -101,8 +101,6 @@ texture = ExtResource("4_swqec")
 
 [node name="DampedSpringJoint2D" type="DampedSpringJoint2D" parent="."]
 position = Vector2(1017, 251)
-node_a = NodePath("../Player")
-node_b = NodePath("../Asteroids/Asteroid")
 bias = 0.5
 length = 300.0
 rest_length = 300.0
@@ -116,6 +114,7 @@ position = Vector2(1017, 251)
 
 [node name="Asteroid" parent="Asteroids" instance=ExtResource("3_ueuon")]
 position = Vector2(1015, 549)
+mass = 10.491
 
 [node name="PlayerSpawn" type="Area2D" parent="."]
 position = Vector2(938, 567)

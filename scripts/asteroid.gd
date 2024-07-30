@@ -52,7 +52,7 @@ func _ready():
 			cshape.shape = preload("res://resources/asteroid_small_cshape.tres")
 
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	#global_position += movementVector.rotated(rotation) * speed * delta
 	
 	#teleoprt to the other side of the screen when you go off the edge
@@ -62,7 +62,7 @@ func _physics_process(delta):
 		global_position.y = screenSize.y + radius
 	elif global_position.y - radius > screenSize.y:
 		global_position.y = 0 - radius
-		
+	
 	if global_position.x + radius < 0: 
 		global_position.x = screenSize.x + radius
 	elif global_position.x - radius > screenSize.x:
