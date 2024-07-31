@@ -39,18 +39,19 @@ var asteroid_scene = preload("res://scenes/asteroid.tscn")
 
 func initLayout(numAsteroids: int):
 	var rect = get_viewport_rect()
-	playerSpawn.global_position = rect.size/2
+	#playerSpawn.global_position = rect.size/2
 	#player.global_position = playerSpawn.global_position
-	for b in $Starfield.get_children():
-		b.global_position = Vector2(rect.size.x, rect.size.y/2)
-		b.process_material.emission_box_extents = Vector3(1, rect.size.y/2, 1)
-		b.amount = (rect.size.y/2) / b.process_material.scale.x
-		b.emitting = true
+	#for b in $Starfield.get_children():
+		#b.global_position = Vector2(rect.size.x, rect.size.y/2)
+		#b.process_material.emission_box_extents = Vector3(1, rect.size.y/2, 1)
+		#b.amount = (rect.size.y/2) / b.process_material.scale.x
+		#b.emitting = true
 	
 	for n in numAsteroids:
 		var a = asteroid_scene.instantiate()
 		a.global_position = Vector2(randf_range(0, rect.size.x), randf_range(0, rect.size.y))
 		a.size = Asteroid.AsteroidSize.LARGE
+		#TODO Random sizes  randf_range(0, rect.size.x)
 		asteroids.add_child(a)
 
 

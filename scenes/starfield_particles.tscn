@@ -1,0 +1,70 @@
+[gd_scene load_steps=4 format=3 uid="uid://rev1lg5g1o3g"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ywpte"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(1, 400, 1)
+direction = Vector3(-1, 0, 0)
+spread = 0.0
+initial_velocity_min = 10.0
+initial_velocity_max = 15.0
+gravity = Vector3(0, 0, 0)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_oxtg6"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(1, 400, 1)
+direction = Vector3(-1, 0, 0)
+spread = 0.0
+initial_velocity_min = 20.0
+initial_velocity_max = 25.0
+gravity = Vector3(0, 0, 0)
+scale_min = 2.0
+scale_max = 2.0
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_rvua6"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(1, 400, 1)
+direction = Vector3(-1, 0, 0)
+spread = 0.0
+initial_velocity_min = 40.0
+initial_velocity_max = 45.0
+gravity = Vector3(0, 0, 0)
+scale_min = 3.0
+scale_max = 5.0
+
+[node name="StarfieldParticles" type="Node"]
+
+[node name="StarfieldBack1" type="GPUParticles2D" parent="."]
+visible = false
+z_index = -1
+position = Vector2(1316, 346)
+emitting = false
+amount = 400
+process_material = SubResource("ParticleProcessMaterial_ywpte")
+lifetime = 400.0
+preprocess = 144.0
+speed_scale = 1.77
+
+[node name="StarfieldBack2" type="GPUParticles2D" parent="."]
+visible = false
+z_index = -1
+position = Vector2(1316, 346)
+emitting = false
+amount = 400
+process_material = SubResource("ParticleProcessMaterial_oxtg6")
+lifetime = 400.0
+preprocess = 144.0
+speed_scale = 1.77
+
+[node name="StarfieldBack3" type="GPUParticles2D" parent="."]
+visible = false
+z_index = -1
+position = Vector2(1316, 346)
+emitting = false
+amount = 10
+process_material = SubResource("ParticleProcessMaterial_rvua6")
+lifetime = 400.0
+preprocess = 144.0
+speed_scale = 1.77

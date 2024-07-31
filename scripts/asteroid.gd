@@ -52,21 +52,21 @@ func _ready():
 			cshape.shape = preload("res://resources/asteroid_small_cshape.tres")
 
 
-func _physics_process(_delta):
+#func _physics_process(_delta):
 	#global_position += movementVector.rotated(rotation) * speed * delta
 	
 	#teleoprt to the other side of the screen when you go off the edge
-	var radius = cshape.shape.radius
-	var screenSize = get_viewport_rect().size
-	if global_position.y + radius < 0: 
-		global_position.y = screenSize.y + radius
-	elif global_position.y - radius > screenSize.y:
-		global_position.y = 0 - radius
-	
-	if global_position.x + radius < 0: 
-		global_position.x = screenSize.x + radius
-	elif global_position.x - radius > screenSize.x:
-		global_position.x = 0 - radius
+	#var radius = cshape.shape.radius
+	#var screenSize = get_viewport_rect().size
+	#if global_position.y + radius < 0: 
+		#global_position.y = screenSize.y + radius
+	#elif global_position.y - radius > screenSize.y:
+		#global_position.y = 0 - radius
+	#
+	#if global_position.x + radius < 0: 
+		#global_position.x = screenSize.x + radius
+	#elif global_position.x - radius > screenSize.x:
+		#global_position.x = 0 - radius
 
 func _on_area_entered(area):
 	if(area is Laser):
