@@ -16,7 +16,7 @@ extends RayCast2D
 		#self.is_casting = event.pressed
 
 
-var is_casting := true: 
+var is_casting := false: 
 	set(value):
 		is_casting = value
 		if is_casting:

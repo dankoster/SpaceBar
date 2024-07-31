@@ -24,7 +24,7 @@ func _process(delta):
 	
 	if Input.is_action_just_pressed("shoot"): 
 		$LaserBeam2D.is_casting = true
-		$DampedSpringJoint2D.node_b = target.get_path()
+		$DampedSpringJoint2D.node_b = target.get_path() if target else ""
 		
 
 	if Input.is_action_just_released("shoot"): 
@@ -74,12 +74,6 @@ func _physics_process(delta):
 	# accelerate in direction of travel
 	# wait until the player is moving tangental
 	# to the target object before attaching the spring
-
-	print(str(velocity))	
-	$Stars.global_position = self.global_position - $Stars.size/2
-	#$Stars.material.set("shader_parameter/speed_x", velocity.x * 0.5)
-	#$Stars.material.set("shader_parameter/speed_y", velocity.y * 0.5)
-
 	
 	var axis := Input.get_axis("move_forward", "move_backward")
 	if axis:
@@ -92,28 +86,40 @@ func _physics_process(delta):
 	if Input.is_action_pressed("rotate_left"):
 		rotate(deg_to_rad(-rotation_speed * delta))
 	
-	#if Input.is_anything_pressed():
-		#elapsed = 0.0
-#
-	#if elapsed < 1:
-		#rotation = lerp_angle(rotation, velocity.angle() + deg_to_rad(90), elapsed)
-		#elapsed += delta * (velocity.length() * 0.0001)
-		
+	if Input.is_anything_pressed():
+		elapsed = 0.0
 
+	#correct direction of travel to face velocity vector
+	if elapsed < 1:
+		var targetAngle = velocity.angle() + deg_to_rad(90)
+		rotation = lerp_angle(rotation, targetAngle, elapsed)
+		elapsed += delta * (velocity.length() * 0.001)
+		
+		var targetVector = Vector2.from_angle(rotation)
+		var vNorm = velocity.normalized()
+		var dot = vNorm.dot(targetVector)
+		var msec = Time.get_ticks_msec()
+		if(abs(dot) < 0.01):
+			print(str(msec) + " done correcting direction of travel:" + str(dot))
+			elapsed = 1.0
+		
 	var collision = move_and_collide(velocity)
 	if collision:
-		print("I collided with ", collision.get_collider().name)
+		print(str(delta) + " collided with ", collision.get_collider().name)
 		velocity = velocity.slide(collision.get_normal())
-		
+		elapsed = 0.0
+
 
 	#only need to change the target sometimes
-	if !target || !$LaserBeam2D.is_casting:
+	#TODO: constrain motion https://code.tutsplus.com/swinging-physics-for-player-movement-as-seen-in-spider-man-2-and-energy-hook--gamedev-8782t
+	if $LaserBeam2D.is_casting:
 		target = nearestNode(get_parent().asteroids.get_children())
-		#TODO: constrain motion https://code.tutsplus.com/swinging-physics-for-player-movement-as-seen-in-spider-man-2-and-energy-hook--gamedev-8782t
+		print(str(Time.get_ticks_msec()) + " ---- LASER! ----> " + str(target))
 
 	#always look at the target when we move
-	$LaserBeam2D.look_at(target.global_position)
-	$DampedSpringJoint2D.look_at(target.global_position)
+	if target:
+		$LaserBeam2D.look_at(target.global_position)
+		$DampedSpringJoint2D.look_at(target.global_position)
 	
 
 func explode():
