@@ -75,6 +75,7 @@ shape = SubResource("CircleShape2D_52xjr")
 [node name="Starfield" type="Node" parent="."]
 
 [node name="StarfieldBack1" type="GPUParticles2D" parent="Starfield"]
+visible = false
 z_index = -1
 position = Vector2(1316, 346)
 emitting = false
@@ -85,6 +86,7 @@ preprocess = 144.0
 speed_scale = 1.77
 
 [node name="StarfieldBack2" type="GPUParticles2D" parent="Starfield"]
+visible = false
 z_index = -1
 position = Vector2(1316, 346)
 emitting = false
@@ -95,6 +97,7 @@ preprocess = 144.0
 speed_scale = 1.77
 
 [node name="StarfieldBack3" type="GPUParticles2D" parent="Starfield"]
+visible = false
 z_index = -1
 position = Vector2(1316, 346)
 emitting = false
@@ -105,6 +108,19 @@ preprocess = 144.0
 speed_scale = 1.77
 
 [node name="Lasers" type="Node" parent="."]
+
+[node name="Player" parent="." instance=ExtResource("1_wvhut")]
+position = Vector2(1145, 467)
+
+[node name="PointLight2D" type="PointLight2D" parent="Player"]
+scale = Vector2(15, 15)
+blend_mode = 2
+range_item_cull_mask = 2
+shadow_enabled = true
+shadow_item_cull_mask = 2
+texture = SubResource("GradientTexture2D_o0ort")
+texture_scale = 10.0
+height = 500.0
 
 [node name="Asteroids" type="Node" parent="."]
 
@@ -119,16 +135,3 @@ position = Vector2(648, 660)
 
 [node name="Asteroid4" parent="Asteroids" instance=ExtResource("3_ueuon")]
 position = Vector2(373, 923)
-
-[node name="Player" parent="." instance=ExtResource("1_wvhut")]
-position = Vector2(1145, 467)
-
-[node name="PointLight2D" type="PointLight2D" parent="Player"]
-scale = Vector2(15, 15)
-blend_mode = 2
-range_item_cull_mask = 2
-shadow_enabled = true
-shadow_item_cull_mask = 2
-texture = SubResource("GradientTexture2D_o0ort")
-texture_scale = 10.0
-height = 500.0
