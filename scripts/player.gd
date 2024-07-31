@@ -24,28 +24,14 @@ func _process(delta):
 	
 	if Input.is_action_just_pressed("shoot"): 
 		$LaserBeam2D.is_casting = true
-		$DampedSpringJoint2D.node_b = target.get_path() if target else ""
-		
+		target = nearestNode(get_parent().asteroids.get_children())
+		print(str(Time.get_ticks_msec()) + " ---- LASER! ----> " + str(target))
+		$DampedSpringJoint2D.node_b = target.get_path()
 
 	if Input.is_action_just_released("shoot"): 
 		$LaserBeam2D.is_casting = false
 		$DampedSpringJoint2D.node_b = ""
-	
-	#if Input.is_action_pressed("shoot"):
-		#if !shotCooldown: 
-			#shotCooldown = true
-			#shoot_laser()
-			#await get_tree().create_timer(shotRate).timeout
-			#shotCooldown = false
-
-	#if Input.is_action_pressed("rotate_right"):
-		#apply_torque_impulse(rotation_speed)
-	#if Input.is_action_pressed("rotate_left"):
-		#apply_torque_impulse(-rotation_speed)
-	#
-	#if Input.is_action_pressed("move_forward"):
-		#var inputVector := Vector2(0, Input.get_axis("move_forward", "move_backward"))
-		#apply_impulse(inputVector.rotated(rotation) * acceleration)
+		target = null
 
 func shoot_laser(): 
 	assert(isAlive, "tried to shoot a laser while !isAlive")
@@ -70,9 +56,7 @@ var target: PhysicsBody2D
 var elapsed := 1.0
 func _physics_process(delta):
 	
-	#TODO: Always face direction of travel
-	# accelerate in direction of travel
-	# wait until the player is moving tangental
+	#TODO: wait until the player is moving tangental
 	# to the target object before attaching the spring
 	
 	var axis := Input.get_axis("move_forward", "move_backward")
@@ -115,12 +99,12 @@ func _physics_process(delta):
 	if $LaserBeam2D.is_casting:
 		target = nearestNode(get_parent().asteroids.get_children())
 		print(str(Time.get_ticks_msec()) + " ---- LASER! ----> " + str(target))
-
-	#always look at the target when we move
-	if target:
 		$LaserBeam2D.look_at(target.global_position)
 		$DampedSpringJoint2D.look_at(target.global_position)
-	
+		$DampedSpringJoint2D.node_b = target.get_path()
+	else:
+		target = null
+		$DampedSpringJoint2D.node_b = ""
 
 func explode():
 	assert(isAlive, "tried to explode while !isAlive")
