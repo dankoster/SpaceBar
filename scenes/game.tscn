@@ -74,9 +74,9 @@ visible = false
 ignore_rotation = false
 limit_smoothed = true
 position_smoothing_enabled = true
-position_smoothing_speed = 1.0
+position_smoothing_speed = 2.0
 rotation_smoothing_enabled = true
-rotation_smoothing_speed = 1.0
+rotation_smoothing_speed = 2.0
 
 [node name="Asteroids" type="Node" parent="."]
 

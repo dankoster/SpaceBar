@@ -58,26 +58,31 @@ func _physics_process(delta):
 		velocity = velocity.limit_length(maxSpeed)
 
 	#correct totation to face velocity vector up
-	correctRotation(delta, 0.01)
+	#correctRotation(delta, 0.01)
 
 
 	#only need to change the target sometimes
 	#TODO: constrain motion https://code.tutsplus.com/swinging-physics-for-player-movement-as-seen-in-spider-man-2-and-energy-hook--gamedev-8782t
 	if $LaserBeam2D.is_casting:
 		
-		#constrain position
+		#constrain position and direction
 		var targetToSelf = global_position - target.global_position
-		if targetToSelf.length() > tetherLength: 
+		var length = targetToSelf.length()
+		if length > tetherLength: 
 			var newPos = target.global_position + (targetToSelf.normalized() * tetherLength)
-			
 			#turn velocity vector in the new direction of travel
 			velocity += (newPos - global_position).normalized() * velocity.length()
-			
+			#constrain position
 			global_position = newPos
 		
+		#super jank tether length shortening (tangental would be better?)
+		#elif tetherLength - length > 50: #length < tetherLength:
+			#print(str(tetherLength - length))
+			#tetherLength = length
+		
 		$LaserBeam2D.look_at(target.global_position)
-		#$DampedSpringJoint2D.look_at(target.global_position)
-		#$DampedSpringJoint2D.node_b = target.get_path()
+		$DampedSpringJoint2D.look_at(target.global_position)
+		$DampedSpringJoint2D.node_b = target.get_path()
 		
 	var collision = move_and_collide(velocity)
 	if collision:
