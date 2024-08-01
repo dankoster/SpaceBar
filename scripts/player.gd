@@ -58,36 +58,32 @@ func _physics_process(delta):
 		velocity = velocity.limit_length(maxSpeed)
 
 	#correct totation to face velocity vector up
-	correctRotation(delta)
-		
-	var collision = move_and_collide(velocity)
-	if collision:
-		print(str(delta) + " collided with ", collision.get_collider().name)
-		velocity = velocity.slide(collision.get_normal())
-		elapsed = 0.0
+	correctRotation(delta, 0.01)
 
 
 	#only need to change the target sometimes
 	#TODO: constrain motion https://code.tutsplus.com/swinging-physics-for-player-movement-as-seen-in-spider-man-2-and-energy-hook--gamedev-8782t
 	if $LaserBeam2D.is_casting:
 		
-		#To find a vector pointing from A(target) to B(self), use B(self) - A(target)
-		#if (testPosition - tetherPoint ).Length() > tetherLength )
-		#{
-		#	// we're past the end of our rope 
-		#	// pull the avatar back in. 
-		#	testPosition = (testPosition - tetherPoint).Normalized() * tetherLength;
-		#}
-		
 		#constrain position
 		var targetToSelf = global_position - target.global_position
 		if targetToSelf.length() > tetherLength: 
 			var newPos = target.global_position + (targetToSelf.normalized() * tetherLength)
+			
+			#turn velocity vector in the new direction of travel
+			velocity += (newPos - global_position).normalized() * velocity.length()
+			
 			global_position = newPos
 		
 		$LaserBeam2D.look_at(target.global_position)
 		#$DampedSpringJoint2D.look_at(target.global_position)
 		#$DampedSpringJoint2D.node_b = target.get_path()
+		
+	var collision = move_and_collide(velocity)
+	if collision:
+		print(str(delta) + " collided with ", collision.get_collider().name)
+		velocity = velocity.slide(collision.get_normal())
+		elapsed = 0.0
 
 
 
@@ -111,11 +107,11 @@ func nearestNode(nodes: Array[Node]) -> Node:
 	return nearest
 
 
-func correctRotation(delta): 
+func correctRotation(delta, factor := 0.001): 
 	if elapsed < 1:
 		var targetAngle = velocity.angle() + deg_to_rad(90)
 		rotation = lerp_angle(rotation, targetAngle, elapsed)
-		elapsed += delta * (velocity.length() * 0.001)
+		elapsed += delta * (velocity.length() * factor)
 		
 		var targetVector = Vector2.from_angle(rotation)
 		var vNorm = velocity.normalized()
