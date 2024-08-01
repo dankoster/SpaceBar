@@ -58,7 +58,7 @@ func _physics_process(delta):
 		velocity = velocity.limit_length(maxSpeed)
 
 	#correct totation to face velocity vector up
-	#correctRotation(delta, 0.01)
+	correctRotation(delta, 0.01)
 
 
 	#only need to change the target sometimes
@@ -69,20 +69,21 @@ func _physics_process(delta):
 		var targetToSelf = global_position - target.global_position
 		var length = targetToSelf.length()
 		if length > tetherLength: 
-			var newPos = target.global_position + (targetToSelf.normalized() * tetherLength)
-			#turn velocity vector in the new direction of travel
-			velocity += (newPos - global_position).normalized() * velocity.length()
-			#constrain position
-			global_position = newPos
-		
-		#super jank tether length shortening (tangental would be better?)
-		#elif tetherLength - length > 50: #length < tetherLength:
-			#print(str(tetherLength - length))
-			#tetherLength = length
+			#turn the velocity vecrtor toward the target (effectively collide with
+			# a virtual sphere around the target
+			var normalToTarget = global_position.direction_to(target.global_position)
+			velocity = velocity.slide(normalToTarget)
+			
+			#rotate in the direction of travel
+			rotation = velocity.orthogonal().rotated(deg_to_rad(180)).angle()
+			$DampedSpringJoint2D.node_b = target.get_path()
+			
+		#shorten the tether if we're approaching the target so we don't go past and bounce
+		elif length < tetherLength:	
+			tetherLength = length
 		
 		$LaserBeam2D.look_at(target.global_position)
 		$DampedSpringJoint2D.look_at(target.global_position)
-		$DampedSpringJoint2D.node_b = target.get_path()
 		
 	var collision = move_and_collide(velocity)
 	if collision:
@@ -120,9 +121,9 @@ func correctRotation(delta, factor := 0.001):
 		
 		var targetVector = Vector2.from_angle(rotation)
 		var vNorm = velocity.normalized()
-		var dot = vNorm.dot(targetVector)
+		var angleDiff = vNorm.dot(targetVector)
 		var msec = Time.get_ticks_msec()
-		if(abs(dot) < 0.01):
+		if(abs(angleDiff) < 0.01):
 			#print(str(msec) + " done correcting direction of travel:" + str(dot))
 			elapsed = 1.0
 
