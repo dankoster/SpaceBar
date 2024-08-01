@@ -40,15 +40,15 @@ func _ready():
 	match size:
 		AsteroidSize.LARGE:
 			speed = randf_range(50, 100)
-			sprite.texture = preload("res://assets/kenney_space-shooter-redux/PNG/Meteors/meteorGrey_big1.png")
+			sprite.texture = preload("res://assets/meteorGrey_big1.png")
 			cshape.shape = preload("res://resources/asteroid_large_cshape.tres")
 		AsteroidSize.MEDIUM:
 			speed = randf_range(100, 150)
-			sprite.texture = preload("res://assets/kenney_space-shooter-redux/PNG/Meteors/meteorGrey_med1.png")
+			sprite.texture = preload("res://assets/meteorGrey_med1.png")
 			cshape.shape = preload("res://resources/asteroid_medium_cshape.tres")
 		AsteroidSize.SMALL:
 			speed = randf_range(150, 200)
-			sprite.texture = preload("res://assets/kenney_space-shooter-redux/PNG/Meteors/meteorGrey_small1.png")
+			sprite.texture = preload("res://assets/meteorGrey_small1.png")
 			cshape.shape = preload("res://resources/asteroid_small_cshape.tres")
 
 

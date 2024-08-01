@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://u4ojjo6k7ik6"]
 
 [ext_resource type="Script" path="res://scripts/game_over_screen.gd" id="1_5k83g"]
-[ext_resource type="FontFile" uid="uid://yraqf471o77o" path="res://assets/kenney_kenney-fonts/Fonts/Kenney Future.ttf" id="1_wopx1"]
+[ext_resource type="FontFile" uid="uid://bddg7p2xrn8di" path="res://assets/Kenney Future.ttf" id="1_wopx1"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_wjwqu"]
 font = ExtResource("1_wopx1")

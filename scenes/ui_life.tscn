@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dv1hlleaw010o"]
 
-[ext_resource type="Texture2D" uid="uid://b402se5pkbwln" path="res://assets/kenney_simple-space/PNG/Retina/ship_F.png" id="1_l5o6m"]
+[ext_resource type="Texture2D" uid="uid://bls4di7061nl5" path="res://assets/ship_F.png" id="1_l5o6m"]
 
 [node name="UILife" type="TextureRect"]
 offset_left = 92.0
