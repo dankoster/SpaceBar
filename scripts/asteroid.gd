@@ -10,16 +10,19 @@ var speed := 50.0
 @onready var sprite = $Sprite2D
 @onready var cshape = $CollisionShape2D
 
-func explode():
+func explode(velocity: Vector2):
+	var vel1 = velocity.orthogonal() * 100
+	var vel2 = vel1.rotated(deg_to_rad(20))
+
 	match size: 
 		AsteroidSize.LARGE:
 			$ExplodeSoundLg.play()
-			spawnSiblingInParent(AsteroidSize.MEDIUM)
-			spawnSiblingInParent(AsteroidSize.MEDIUM)
+			spawnSiblingInParent(AsteroidSize.MEDIUM, vel1)
+			spawnSiblingInParent(AsteroidSize.MEDIUM, vel2)
 		AsteroidSize.MEDIUM:
 			$ExplodeSoundMd.play()
-			spawnSiblingInParent(AsteroidSize.SMALL)
-			spawnSiblingInParent(AsteroidSize.SMALL)
+			spawnSiblingInParent(AsteroidSize.SMALL, vel1)
+			spawnSiblingInParent(AsteroidSize.SMALL, vel2)
 		AsteroidSize.SMALL:
 			$ExplodeSoundSm.play()
 
@@ -27,10 +30,11 @@ func explode():
 	queue_free()
 
 
-func spawnSiblingInParent(siblingSize):
+func spawnSiblingInParent(siblingSize: AsteroidSize, velocity: Vector2):
 	var a = duplicate()
 	a.global_position = global_position
 	a.size = siblingSize
+	a.linear_velocity = velocity
 	get_parent().call_deferred("add_child", a)
 
 
@@ -71,7 +75,7 @@ func _ready():
 func _on_area_entered(area):
 	if(area is Laser):
 		area.queue_free()
-		explode()
+		explode(Vector2.ZERO)
 	else:
 		Events.AsteroidHitArea.emit(self, area)
 

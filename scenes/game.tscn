@@ -50,6 +50,7 @@ rotation_smoothing_speed = 2.0
 
 [node name="Asteroid" parent="Asteroids" instance=ExtResource("3_ueuon")]
 position = Vector2(1090, 831)
+linear_velocity = Vector2(10, 10)
 
 [node name="Asteroid2" parent="Asteroids" instance=ExtResource("3_ueuon")]
 position = Vector2(623, 923)

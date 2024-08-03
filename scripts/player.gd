@@ -97,10 +97,11 @@ func _physics_process(delta):
 		
 	var collision = move_and_collide(velocity)
 	if collision:
-		print(str(Time.get_ticks_msec()) + " collided with ", collision.get_collider().name)
+		var collider = collision.get_collider()
+		print(str(Time.get_ticks_msec()) + " collided with ", collider.name)
 		velocity = velocity.slide(collision.get_normal())
 		elapsed = 0.0
-		explode()
+		Events.PlayerCollided.emit(self, collider)
 
 
 func shoot_laser(): 
@@ -143,6 +144,8 @@ func explode():
 	sprite.visible = false
 	setBeamTarget(null)
 	$CollisionShape2D.set_deferred("disabled", true)
+	velocity = Vector2.ZERO
+	setBeamTarget(null)
 	explodeSound.play()
 	died.emit(self)
 

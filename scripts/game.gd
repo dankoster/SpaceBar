@@ -27,6 +27,7 @@ func _ready():
 	player.connect("died", onPlayerDied)
 	Events.connect("AsteroidExploded", onAsteroidExploded)
 	Events.connect("AsteroidHitBody", onAsteroidHitBody)
+	Events.PlayerCollided.connect(onPlayerCollided)
 	get_viewport().connect("size_changed", initLayout)
 	$Player/Camera2D.ignore_rotation = true
 	initLayout(15)
@@ -57,6 +58,7 @@ func initLayout(numAsteroids: int):
 
 
 func onAsteroidHitBody(asteroid, target):
+	print('onAsteroidHitBody ' + str(asteroid) + " " + str(target))
 	asteroid.explode()
 	target.explode() #probably the player!
 
@@ -68,6 +70,11 @@ func onPlayerShotLaser(laser: Laser):
 func onAsteroidExploded(asteroid: Asteroid):
 	score += asteroid.size * 100
 
+
+func onPlayerCollided(player: Player, collider):
+	if(collider is Asteroid):
+		collider.explode(player.velocity)
+		player.explode()
 
 func onPlayerDied(p: Player):
 	lives -= 1
