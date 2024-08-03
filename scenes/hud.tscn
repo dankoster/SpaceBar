@@ -1,8 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://c2pu86obylva3"]
+[gd_scene load_steps=4 format=3 uid="uid://c2pu86obylva3"]
 
 [ext_resource type="Script" path="res://scripts/hud.gd" id="1_uqj0x"]
 [ext_resource type="FontFile" uid="uid://bddg7p2xrn8di" path="res://assets/Kenney Future.ttf" id="2_u3pxp"]
-[ext_resource type="PackedScene" uid="uid://dv1hlleaw010o" path="res://scenes/ui_life.tscn" id="3_dwtmi"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_mkkrr"]
 font = ExtResource("2_u3pxp")
@@ -31,27 +30,3 @@ offset_top = 85.0
 offset_right = 845.0
 offset_bottom = 213.0
 scale = Vector2(0.3, 0.3)
-
-[node name="UILife" parent="LivesContainer" instance=ExtResource("3_dwtmi")]
-layout_mode = 2
-texture = null
-
-[node name="UILife2" parent="LivesContainer" instance=ExtResource("3_dwtmi")]
-layout_mode = 2
-texture = null
-
-[node name="UILife3" parent="LivesContainer" instance=ExtResource("3_dwtmi")]
-layout_mode = 2
-texture = null
-
-[node name="UILife4" parent="LivesContainer" instance=ExtResource("3_dwtmi")]
-layout_mode = 2
-texture = null
-
-[node name="UILife5" parent="LivesContainer" instance=ExtResource("3_dwtmi")]
-layout_mode = 2
-texture = null
-
-[node name="UILife6" parent="LivesContainer" instance=ExtResource("3_dwtmi")]
-layout_mode = 2
-texture = null
