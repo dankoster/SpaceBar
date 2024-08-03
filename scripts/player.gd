@@ -7,7 +7,8 @@ signal spawned(player)
 @export var acceleration := 10.0
 @export var maxSpeed := 550
 @export var rotation_speed := 100.0
-@export var fuel := 100.0:
+@export var fuel: float:
+	get(): return $CanvasLayer/FuelGauge.value
 	set(value): $CanvasLayer/FuelGauge.value = value
 
 @onready var gun = $Gun
@@ -45,6 +46,11 @@ func _process(delta):
 	if !isAlive: return
 	
 	moveAxis = Input.get_axis("move_forward", "move_backward")
+	if(moveAxis != 0):
+		print('fuel -- ' + str(fuel))
+		if(fuel > 0): fuel -= (20 * delta)
+		else: moveAxis = 0
+	
 	if Input.is_action_just_pressed("shoot"): 
 		setBeamTarget(nearestNode(get_parent().asteroids.get_children()))
 	if Input.is_action_just_released("shoot"): 
@@ -76,6 +82,7 @@ func _physics_process(delta):
 		velocity = velocity.slide(collision.get_normal())
 		elapsed = 0.0
 		Events.PlayerCollided.emit(self, collider)
+
 
 func tetherToTarget():
 	assert(target.global_position, "invalid target!")

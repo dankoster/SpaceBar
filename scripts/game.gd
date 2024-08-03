@@ -23,6 +23,7 @@ func _ready():
 	gameOver.visible = false
 	score = 0
 	lives = 3
+	player.fuel = 100.0
 	player.connect("laser_shot", onPlayerShotLaser)
 	player.connect("died", onPlayerDied)
 	Events.connect("AsteroidExploded", onAsteroidExploded)
