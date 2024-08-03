@@ -12,6 +12,7 @@ signal spawned(player)
 @onready var sprite = $Sprite2D
 @onready var explodeSound = $Explode
 @onready var laserSound = $Laser
+@onready var originalColor :Color = sprite.self_modulate
 
 var laser_scene = preload("res://scenes/laser.tscn")
 
@@ -22,21 +23,29 @@ var target: PhysicsBody2D
 var elapsed := 1.0
 var tetherLength := 0.0
 
+func setBeamTarget(node: Node2D): 
+	if(node):
+		target = node
+		$LaserBeam2D.is_casting = true
+		tetherLength = global_position.distance_to(target.global_position)
+		print(str(Time.get_ticks_msec()) + " ---- LASER! ----> " + str(target.name) + " " + str(tetherLength))
+		#sprite.self_modulate = Color.FUCHSIA
+	else:
+		$LaserBeam2D.is_casting = false
+		$DampedSpringJoint2D.node_b = ""
+		tetherLength = 0.0 
+		target = null
+		#sprite.self_modulate = originalColor
+		print(str(Time.get_ticks_msec()) + ' ------------------')
+
 func _process(delta):
 	if !isAlive: return
 	
 	if Input.is_action_just_pressed("shoot"): 
-		$LaserBeam2D.is_casting = true
-		target = nearestNode(get_parent().asteroids.get_children())
-		tetherLength = global_position.distance_to(target.global_position)
-		print(str(Time.get_ticks_msec()) + " ---- LASER! ----> " + str(target.name) + " " + str(tetherLength))
-		#$DampedSpringJoint2D.node_b = target.get_path()
+		setBeamTarget(nearestNode(get_parent().asteroids.get_children()))
 
 	if Input.is_action_just_released("shoot"): 
-		$LaserBeam2D.is_casting = false
-		$DampedSpringJoint2D.node_b = ""
-		print(str(Time.get_ticks_msec()) + '------------------')
-		target = null
+		setBeamTarget(null)
 	
 	if Input.is_action_pressed("rotate_right"):
 		rotate(deg_to_rad(rotation_speed * delta))
@@ -64,6 +73,7 @@ func _physics_process(delta):
 	#only need to change the target sometimes
 	#TODO: constrain motion https://code.tutsplus.com/swinging-physics-for-player-movement-as-seen-in-spider-man-2-and-energy-hook--gamedev-8782t
 	if $LaserBeam2D.is_casting:
+		assert(target.global_position, "invalid target!")
 		
 		#constrain position and direction
 		var targetToSelf = global_position - target.global_position
@@ -87,10 +97,10 @@ func _physics_process(delta):
 		
 	var collision = move_and_collide(velocity)
 	if collision:
-		print(str(delta) + " collided with ", collision.get_collider().name)
+		print(str(Time.get_ticks_msec()) + " collided with ", collision.get_collider().name)
 		velocity = velocity.slide(collision.get_normal())
 		elapsed = 0.0
-
+		explode()
 
 
 func shoot_laser(): 
@@ -122,17 +132,16 @@ func correctRotation(delta, factor := 0.001):
 		var targetVector = Vector2.from_angle(rotation)
 		var vNorm = velocity.normalized()
 		var angleDiff = vNorm.dot(targetVector)
-		var msec = Time.get_ticks_msec()
 		if(abs(angleDiff) < 0.01):
-			#print(str(msec) + " done correcting direction of travel:" + str(dot))
+			#print(str(Time.get_ticks_msec()) + " done correcting direction of travel:" + str(dot))
 			elapsed = 1.0
 
 
 func explode():
 	assert(isAlive, "tried to explode while !isAlive")
-	#TODO: explosion vfx!
 	isAlive = false
 	sprite.visible = false
+	setBeamTarget(null)
 	$CollisionShape2D.set_deferred("disabled", true)
 	explodeSound.play()
 	died.emit(self)
