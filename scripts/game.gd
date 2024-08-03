@@ -73,8 +73,9 @@ func onPlayerDied(p: Player):
 	lives -= 1
 	if lives > 0:
 		await get_tree().create_timer(1).timeout
-		while !playerSpawn.isEmpty:
-			await get_tree().create_timer(0.5).timeout
+		#while !playerSpawn.isEmpty:
+			#print('player spawn point is not empty')
+			#await get_tree().create_timer(0.5).timeout
 		
 		playerSpawn.global_position = get_viewport_rect().size/2
 		p.respawn(playerSpawn.global_position)
