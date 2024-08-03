@@ -1,27 +1,11 @@
-[gd_scene load_steps=12 format=3 uid="uid://cr6qkt0sfbibr"]
+[gd_scene load_steps=8 format=3 uid="uid://cr6qkt0sfbibr"]
 
 [ext_resource type="Script" path="res://scripts/game.gd" id="1_njtx6"]
 [ext_resource type="PackedScene" uid="uid://b7ehng3d3bhkr" path="res://scenes/player.tscn" id="1_wvhut"]
-[ext_resource type="Shader" path="res://shaders/srarfield.gdshader" id="2_11bb7"]
 [ext_resource type="PackedScene" uid="uid://c2pu86obylva3" path="res://scenes/hud.tscn" id="2_p2jkn"]
 [ext_resource type="PackedScene" uid="uid://u4ojjo6k7ik6" path="res://game_over_screen.tscn" id="3_hk544"]
 [ext_resource type="PackedScene" uid="uid://bxiq30cjpqphu" path="res://scenes/asteroid.tscn" id="3_ueuon"]
 [ext_resource type="Script" path="res://scripts/PlayerSpawn.gd" id="5_0du2r"]
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_ky0lg"]
-frequency = 0.3333
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ffl60"]
-noise = SubResource("FastNoiseLite_ky0lg")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_7mtdm"]
-shader = ExtResource("2_11bb7")
-shader_parameter/resolution = Vector2(600, 400)
-shader_parameter/density = 25.0
-shader_parameter/speed_x = 0.500001
-shader_parameter/speed_y = 0.100001
-shader_parameter/layers = 5.0
-shader_parameter/noise_texture = SubResource("NoiseTexture2D_ffl60")
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_52xjr"]
 radius = 136.059
@@ -29,22 +13,6 @@ radius = 136.059
 [node name="Game" type="Node2D"]
 position = Vector2(-2, 0)
 script = ExtResource("1_njtx6")
-
-[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
-visible = false
-
-[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_mirroring = Vector2(1024, 768)
-
-[node name="Stars" type="ColorRect" parent="ParallaxBackground/ParallaxLayer"]
-material = SubResource("ShaderMaterial_7mtdm")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = 2000.0
-offset_bottom = 1000.0
-grow_horizontal = 2
-grow_vertical = 2
 
 [node name="UI" type="CanvasLayer" parent="."]
 
@@ -67,7 +35,7 @@ shape = SubResource("CircleShape2D_52xjr")
 [node name="Lasers" type="Node" parent="."]
 
 [node name="Player" parent="." instance=ExtResource("1_wvhut")]
-position = Vector2(1310, 855)
+position = Vector2(1382, 813)
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 visible = false
