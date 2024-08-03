@@ -7,6 +7,8 @@ signal spawned(player)
 @export var acceleration := 10.0
 @export var maxSpeed := 550
 @export var rotation_speed := 100.0
+@export var fuel := 100.0:
+	set(value): $CanvasLayer/FuelGauge.value = value
 
 @onready var gun = $Gun
 @onready var sprite = $Sprite2D
@@ -22,6 +24,7 @@ var isAlive := true
 var target: PhysicsBody2D
 var elapsed := 1.0
 var tetherLength := 0.0
+var moveAxis: float = 0.0
 
 func setBeamTarget(node: Node2D): 
 	if(node):
@@ -41,59 +44,30 @@ func setBeamTarget(node: Node2D):
 func _process(delta):
 	if !isAlive: return
 	
+	moveAxis = Input.get_axis("move_forward", "move_backward")
 	if Input.is_action_just_pressed("shoot"): 
 		setBeamTarget(nearestNode(get_parent().asteroids.get_children()))
-
 	if Input.is_action_just_released("shoot"): 
 		setBeamTarget(null)
-	
 	if Input.is_action_pressed("rotate_right"):
 		rotate(deg_to_rad(rotation_speed * delta))
 	if Input.is_action_pressed("rotate_left"):
 		rotate(deg_to_rad(-rotation_speed * delta))
-	
 	if Input.is_anything_pressed():
 		elapsed = 0.0
 
+
 func _physics_process(delta):
 	
-	#TODO: wait until the player is moving tangental
-	# to the target object before attaching the spring
-	
-	var axis := Input.get_axis("move_forward", "move_backward")
-	if axis:
-		var inputVector := Vector2(0, axis)
+	if moveAxis:
+		var inputVector := Vector2(0, moveAxis)
 		velocity += inputVector.rotated(rotation) * acceleration * delta
 		velocity = velocity.limit_length(maxSpeed)
 
-	#correct totation to face velocity vector up
-	correctRotation(delta, 0.01)
+	rotateTowardVelocityVector(delta, 0.01)
 
-
-	#only need to change the target sometimes
-	#TODO: constrain motion https://code.tutsplus.com/swinging-physics-for-player-movement-as-seen-in-spider-man-2-and-energy-hook--gamedev-8782t
 	if $LaserBeam2D.is_casting:
-		assert(target.global_position, "invalid target!")
-		
-		#constrain position and direction
-		var targetToSelf = global_position - target.global_position
-		var length = targetToSelf.length()
-		if length > tetherLength: 
-			#turn the velocity vecrtor toward the target (effectively collide with
-			# a virtual sphere around the target
-			var normalToTarget = global_position.direction_to(target.global_position)
-			velocity = velocity.slide(normalToTarget)
-			
-			#rotate in the direction of travel
-			rotation = velocity.orthogonal().rotated(deg_to_rad(180)).angle()
-			$DampedSpringJoint2D.node_b = target.get_path()
-			
-		#shorten the tether if we're approaching the target so we don't go past and bounce
-		elif length < tetherLength:	
-			tetherLength = length
-		
-		$LaserBeam2D.look_at(target.global_position)
-		$DampedSpringJoint2D.look_at(target.global_position)
+		tetherToTarget()
 		
 	var collision = move_and_collide(velocity)
 	if collision:
@@ -102,6 +76,29 @@ func _physics_process(delta):
 		velocity = velocity.slide(collision.get_normal())
 		elapsed = 0.0
 		Events.PlayerCollided.emit(self, collider)
+
+func tetherToTarget():
+	assert(target.global_position, "invalid target!")
+	
+	#constrain position and direction
+	var targetToSelf = global_position - target.global_position
+	var length = targetToSelf.length()
+	if length > tetherLength: 
+		#turn the velocity vecrtor toward the target (effectively collide with
+		# a virtual sphere around the target
+		var normalToTarget = global_position.direction_to(target.global_position)
+		velocity = velocity.slide(normalToTarget)
+		
+		#rotate in the direction of travel
+		rotation = velocity.orthogonal().rotated(deg_to_rad(180)).angle()
+		$DampedSpringJoint2D.node_b = target.get_path()
+		
+	#shorten the tether if we're approaching the target so we don't go past and bounce
+	elif length < tetherLength:	
+		tetherLength = length
+	
+	$LaserBeam2D.look_at(target.global_position)
+	$DampedSpringJoint2D.look_at(target.global_position)
 
 
 func shoot_laser(): 
@@ -124,7 +121,7 @@ func nearestNode(nodes: Array[Node]) -> Node:
 	return nearest
 
 
-func correctRotation(delta, factor := 0.001): 
+func rotateTowardVelocityVector(delta, factor := 0.001): 
 	if elapsed < 1:
 		var targetAngle = velocity.angle() + deg_to_rad(90)
 		rotation = lerp_angle(rotation, targetAngle, elapsed)

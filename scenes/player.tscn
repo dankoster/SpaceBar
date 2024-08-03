@@ -48,6 +48,8 @@ rest_length = 1.0
 stiffness = 64.0
 
 [node name="PointLight2D" type="PointLight2D" parent="."]
+visible = false
+position = Vector2(-142, -228)
 scale = Vector2(15, 15)
 blend_mode = 2
 range_item_cull_mask = 2
@@ -56,3 +58,20 @@ shadow_item_cull_mask = 2
 texture = SubResource("GradientTexture2D_5m2a4")
 texture_scale = 10.0
 height = 500.0
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="FuelGauge" type="ProgressBar" parent="CanvasLayer"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -165.0
+offset_top = -82.0
+offset_right = 166.0
+offset_bottom = -55.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_vertical = 8
+value = 50.0

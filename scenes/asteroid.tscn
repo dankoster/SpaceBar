@@ -12,7 +12,6 @@ cull_mode = 1
 polygon = PackedVector2Array(-34, -43, -52, 10, -22, 43, 10, 31, 35, 35, 51, -1, 23, -43)
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_ndwjt"]
-light_mode = 2
 
 [node name="Asteroid" type="RigidBody2D"]
 light_mask = 2
@@ -23,10 +22,12 @@ mass = 100.0
 script = ExtResource("1_03atf")
 
 [node name="DirectionalLight2D" type="DirectionalLight2D" parent="."]
+visible = false
 editor_only = true
 blend_mode = 2
 
 [node name="LightOccluder2D" type="LightOccluder2D" parent="."]
+visible = false
 occluder = SubResource("OccluderPolygon2D_k7raa")
 occluder_light_mask = 3
 
