@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://bmm2ciopmoowv"]
+[gd_scene load_steps=13 format=3 uid="uid://bmm2ciopmoowv"]
 
 [ext_resource type="Script" path="res://VFX/LaserBeam/LaserBeam.gd" id="1"]
 
@@ -67,10 +67,6 @@ scale_curve = SubResource("CurveTexture_xj7cq")
 color_ramp = SubResource("GradientTexture1D_hw410")
 turbulence_noise_strength = 18.42
 
-[sub_resource type="Environment" id="Environment_el3qe"]
-background_mode = 3
-glow_enabled = true
-
 [node name="LaserBeam2D" type="RayCast2D"]
 hit_from_inside = true
 script = ExtResource("1")
@@ -105,6 +101,3 @@ emitting = false
 amount = 50
 process_material = SubResource("ParticleProcessMaterial_jhgd8")
 texture = SubResource("GradientTexture2D_2gymk")
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_el3qe")
