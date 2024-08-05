@@ -47,7 +47,6 @@ func _process(delta):
 	
 	moveAxis = Input.get_axis("move_forward", "move_backward")
 	if(moveAxis != 0):
-		print('fuel -- ' + str(fuel))
 		if(fuel > 0): fuel -= (20 * delta)
 		else: moveAxis = 0
 	

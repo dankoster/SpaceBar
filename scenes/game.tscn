@@ -1,10 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://cr6qkt0sfbibr"]
+[gd_scene load_steps=7 format=3 uid="uid://cr6qkt0sfbibr"]
 
 [ext_resource type="Script" path="res://scripts/game.gd" id="1_njtx6"]
 [ext_resource type="PackedScene" uid="uid://b7ehng3d3bhkr" path="res://scenes/player.tscn" id="1_wvhut"]
 [ext_resource type="PackedScene" uid="uid://c2pu86obylva3" path="res://scenes/hud.tscn" id="2_p2jkn"]
-[ext_resource type="PackedScene" uid="uid://u4ojjo6k7ik6" path="res://game_over_screen.tscn" id="3_hk544"]
-[ext_resource type="PackedScene" uid="uid://bxiq30cjpqphu" path="res://scenes/asteroid.tscn" id="3_ueuon"]
+[ext_resource type="PackedScene" uid="uid://u4ojjo6k7ik6" path="res://scenes/game_over_screen.tscn" id="3_hk544"]
 [ext_resource type="Script" path="res://scripts/PlayerSpawn.gd" id="5_0du2r"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_52xjr"]
@@ -47,16 +46,3 @@ rotation_smoothing_enabled = true
 rotation_smoothing_speed = 2.0
 
 [node name="Asteroids" type="Node" parent="."]
-
-[node name="Asteroid" parent="Asteroids" instance=ExtResource("3_ueuon")]
-position = Vector2(1090, 831)
-linear_velocity = Vector2(10, 10)
-
-[node name="Asteroid2" parent="Asteroids" instance=ExtResource("3_ueuon")]
-position = Vector2(623, 923)
-
-[node name="Asteroid3" parent="Asteroids" instance=ExtResource("3_ueuon")]
-position = Vector2(642, 633)
-
-[node name="Asteroid4" parent="Asteroids" instance=ExtResource("3_ueuon")]
-position = Vector2(955, 938)
