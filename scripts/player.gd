@@ -15,7 +15,8 @@ signal spawned(player)
 @onready var sprite = $Sprite2D
 @onready var explodeSound = $Explode
 @onready var laserSound = $Laser
-@onready var originalColor :Color = sprite.self_modulate
+
+@onready var laserBeam = $LaserBeam2D
 
 var laser_scene = preload("res://scenes/laser.tscn")
 
@@ -30,16 +31,14 @@ var moveAxis: float = 0.0
 func setBeamTarget(node: Node2D): 
 	if(node):
 		target = node
-		$LaserBeam2D.is_casting = true
+		laserBeam.is_casting = true
 		tetherLength = global_position.distance_to(target.global_position)
 		print(str(Time.get_ticks_msec()) + " ---- LASER! ----> " + str(target.name) + " " + str(tetherLength))
-		#sprite.self_modulate = Color.FUCHSIA
 	else:
-		$LaserBeam2D.is_casting = false
+		laserBeam.is_casting = false
 		$DampedSpringJoint2D.node_b = ""
 		tetherLength = 0.0 
 		target = null
-		#sprite.self_modulate = originalColor
 		print(str(Time.get_ticks_msec()) + ' ------------------')
 
 func _process(delta):
@@ -71,7 +70,7 @@ func _physics_process(delta):
 
 	rotateTowardVelocityVector(delta, 0.01)
 
-	if $LaserBeam2D.is_casting:
+	if target:
 		tetherToTarget()
 		
 	var collision = move_and_collide(velocity)
@@ -103,7 +102,7 @@ func tetherToTarget():
 	elif length < tetherLength:	
 		tetherLength = length
 	
-	$LaserBeam2D.look_at(target.global_position)
+	laserBeam.look_at(target.global_position)
 	$DampedSpringJoint2D.look_at(target.global_position)
 
 
