@@ -31,14 +31,15 @@ var moveAxis: float = 0.0
 func setBeamTarget(node: Node2D): 
 	if(node):
 		target = node
-		laserBeam.is_casting = true
+		$Line2D.add_point(global_position)
+		$Line2D.add_point(target.global_position)
 		tetherLength = global_position.distance_to(target.global_position)
 		print(str(Time.get_ticks_msec()) + " ---- LASER! ----> " + str(target.name) + " " + str(tetherLength))
 	else:
-		laserBeam.is_casting = false
 		$DampedSpringJoint2D.node_b = ""
 		tetherLength = 0.0 
 		target = null
+		$Line2D.clear_points()
 		print(str(Time.get_ticks_msec()) + ' ------------------')
 
 func _process(delta):
@@ -72,6 +73,8 @@ func _physics_process(delta):
 
 	if target:
 		tetherToTarget()
+		$Line2D.set_point_position(0, global_position)
+		$Line2D.set_point_position(1, target.global_position)
 		
 	var collision = move_and_collide(velocity)
 	if collision:
@@ -102,7 +105,6 @@ func tetherToTarget():
 	elif length < tetherLength:	
 		tetherLength = length
 	
-	laserBeam.look_at(target.global_position)
 	$DampedSpringJoint2D.look_at(target.global_position)
 
 
