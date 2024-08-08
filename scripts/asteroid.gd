@@ -1,11 +1,16 @@
 class_name Asteroid extends RigidBody2D
 
 var movementVector := Vector2(0,-1)
-
-enum AsteroidSize{NONE, LARGE, MEDIUM, SMALL}
-@export var size := AsteroidSize.LARGE
-
 var speed := 50.0
+
+enum AsteroidSize { NONE, LARGE, MEDIUM, SMALL }
+const AsteroidMass = {
+	Asteroid.AsteroidSize.LARGE: 10,
+	Asteroid.AsteroidSize.MEDIUM: 5,
+	Asteroid.AsteroidSize.SMALL: 1
+}
+
+@export var size := AsteroidSize.LARGE
 
 @onready var sprite = $Sprite2D
 @onready var cshape = $CollisionShape2D
@@ -13,16 +18,17 @@ var speed := 50.0
 func explode(velocity: Vector2):
 	var vel1 = velocity.orthogonal() * 100
 	var vel2 = vel1.rotated(deg_to_rad(20))
+	var newMass =  AsteroidMass[size + 1] if size < (AsteroidSize.size() -1)  else 1
 
 	match size: 
 		AsteroidSize.LARGE:
 			$ExplodeSoundLg.play()
-			spawnSiblingInParent(AsteroidSize.MEDIUM, vel1)
-			spawnSiblingInParent(AsteroidSize.MEDIUM, vel2)
+			spawnSiblingInParent(AsteroidSize.MEDIUM, vel1, newMass)
+			spawnSiblingInParent(AsteroidSize.MEDIUM, vel2, newMass)
 		AsteroidSize.MEDIUM:
 			$ExplodeSoundMd.play()
-			spawnSiblingInParent(AsteroidSize.SMALL, vel1)
-			spawnSiblingInParent(AsteroidSize.SMALL, vel2)
+			spawnSiblingInParent(AsteroidSize.SMALL, vel1, newMass)
+			spawnSiblingInParent(AsteroidSize.SMALL, vel2, newMass)
 		AsteroidSize.SMALL:
 			$ExplodeSoundSm.play()
 
@@ -30,11 +36,12 @@ func explode(velocity: Vector2):
 	queue_free()
 
 
-func spawnSiblingInParent(siblingSize: AsteroidSize, velocity: Vector2):
+func spawnSiblingInParent(siblingSize: AsteroidSize, velocity: Vector2, newMass: float):
 	var a = duplicate()
 	a.global_position = global_position
 	a.size = siblingSize
 	a.linear_velocity = velocity
+	a.mass = newMass
 	get_parent().call_deferred("add_child", a)
 
 
