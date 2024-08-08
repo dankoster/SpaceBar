@@ -16,8 +16,6 @@ signal spawned(player)
 @onready var explodeSound = $Explode
 @onready var laserSound = $Laser
 
-@onready var laserBeam = $LaserBeam2D
-
 var laser_scene = preload("res://scenes/laser.tscn")
 
 var shotCooldown := false
@@ -34,7 +32,7 @@ func setBeamTarget(node: Node2D):
 		$Line2D.add_point(global_position)
 		$Line2D.add_point(target.global_position)
 		tetherLength = global_position.distance_to(target.global_position)
-		print(str(Time.get_ticks_msec()) + " ---- LASER! ----> " + str(target.name) + " " + str(tetherLength))
+		print(str(Time.get_ticks_msec()) + " ---- LASER! ----> " + str(target.name) + " " + str(target.mass))
 	else:
 		$DampedSpringJoint2D.node_b = ""
 		tetherLength = 0.0 
