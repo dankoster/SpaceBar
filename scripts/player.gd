@@ -22,9 +22,12 @@ var shotCooldown := false
 var shotRate := 0.15
 var isAlive := true
 var target: PhysicsBody2D
+var nearest: PhysicsBody2D
 var elapsed := 1.0
 var tetherLength := 0.0
 var moveAxis: float = 0.0
+var recalculateNearest: float = 0
+
 
 func setBeamTarget(node: Node2D): 
 	if(node):
@@ -40,28 +43,39 @@ func setBeamTarget(node: Node2D):
 		$Line2D.clear_points()
 		print(str(Time.get_ticks_msec()) + ' ------------------')
 
+func _draw(): 
+	draw_set_transform_matrix(get_global_transform().affine_inverse())
+	
+	if(nearest): draw_circle(nearest.global_position, 100.0, Color.DARK_SLATE_GRAY)
+	if(target != null): draw_circle(target.global_position, 75.0, Color.DODGER_BLUE)
+
+
 func _process(delta):
 	if !isAlive: return
+	
+	#recalculate nearest body every n-seconds
+	recalculateNearest += delta
+	if(recalculateNearest >= 0.01): 
+		print("tick! " + str(recalculateNearest))
+		recalculateNearest = 0.0
+		nearest = nearestNode(get_parent().asteroids.get_children())
+		print('set nearest ' + str(nearest))
+		queue_redraw()
 	
 	moveAxis = Input.get_axis("move_forward", "move_backward")
 	if(moveAxis != 0):
 		if(fuel > 0): fuel -= (20 * delta)
 		else: moveAxis = 0
 	
-	if Input.is_action_just_pressed("shoot"): 
-		setBeamTarget(nearestNode(get_parent().asteroids.get_children()))
-	if Input.is_action_just_released("shoot"): 
-		setBeamTarget(null)
-	if Input.is_action_pressed("rotate_right"):
-		rotate(deg_to_rad(rotation_speed * delta))
-	if Input.is_action_pressed("rotate_left"):
-		rotate(deg_to_rad(-rotation_speed * delta))
-	if Input.is_anything_pressed():
-		elapsed = 0.0
+	if Input.is_action_just_pressed("shoot"): setBeamTarget(nearest)
+	if Input.is_action_just_released("shoot"): setBeamTarget(null)
+	if Input.is_action_pressed("rotate_right"): rotate(deg_to_rad(rotation_speed * delta))
+	if Input.is_action_pressed("rotate_left"): rotate(deg_to_rad(-rotation_speed * delta))
+	if Input.is_anything_pressed(): elapsed = 0.0
 
 
 func _physics_process(delta):
-	
+		
 	if moveAxis:
 		var inputVector := Vector2(0, moveAxis)
 		velocity += inputVector.rotated(rotation) * acceleration * delta
@@ -73,6 +87,7 @@ func _physics_process(delta):
 		tetherToTarget()
 		$Line2D.set_point_position(0, global_position)
 		$Line2D.set_point_position(1, target.global_position)
+		queue_redraw()
 		
 	var collision = move_and_collide(velocity)
 	if collision:
@@ -119,10 +134,10 @@ func nearestNode(nodes: Array[Node]) -> Node:
 	var nearest: Asteroid = null
 	var nearestDist: float
 	for a in nodes:
-		var d = global_position.distance_to(a.global_position)
-		if nearest == null || d < nearestDist: 
+		var distance = global_position.distance_to(a.global_position)
+		if nearest == null || distance < nearestDist: 
 			nearest = a
-			nearestDist = d
+			nearestDist = distance
 	return nearest
 
 
