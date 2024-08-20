@@ -46,7 +46,7 @@ func spawnSiblingInParent(siblingSize: AsteroidSize, velocity: Vector2, newMass:
 
 
 func _ready():	
-	rotation = randf_range(0, 2*PI)
+	# rotation = randf_range(0, 2*PI)
 
 	match size:
 		AsteroidSize.LARGE:

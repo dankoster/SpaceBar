@@ -35,13 +35,13 @@ func setBeamTarget(node: Node2D):
 		$Line2D.add_point(global_position)
 		$Line2D.add_point(target.global_position)
 		tetherLength = global_position.distance_to(target.global_position)
-		print(str(Time.get_ticks_msec()) + " ---- LASER! ----> " + str(target.name) + " " + str(target.mass))
+		# print(str(Time.get_ticks_msec()) + " ---- LASER! ----> " + str(target.name) + " " + str(target.mass))
 	else:
 		$DampedSpringJoint2D.node_b = ""
 		tetherLength = 0.0 
 		target = null
 		$Line2D.clear_points()
-		print(str(Time.get_ticks_msec()) + ' ------------------')
+		# print(str(Time.get_ticks_msec()) + ' ------------------')
 
 func _draw(): 
 	draw_set_transform_matrix(get_global_transform().affine_inverse())
@@ -56,10 +56,8 @@ func _process(delta):
 	#recalculate nearest body every n-seconds
 	recalculateNearest += delta
 	if(recalculateNearest >= 0.01): 
-		print("tick! " + str(recalculateNearest))
 		recalculateNearest = 0.0
-		nearest = nearestNode(get_parent().asteroids.get_children())
-		print('set nearest ' + str(nearest))
+		nearest = nearestNode(global_position, get_parent().asteroids.get_children())
 		queue_redraw()
 	
 	moveAxis = Input.get_axis("move_forward", "move_backward")
@@ -130,15 +128,15 @@ func shoot_laser():
 	laser_shot.emit(l)
 
 
-func nearestNode(nodes: Array[Node]) -> Node:
-	var nearest: Asteroid = null
+static func nearestNode(from: Vector2, nodes: Array[Node]) -> Node:
+	var n: Node2D = null
 	var nearestDist: float
 	for a in nodes:
-		var distance = global_position.distance_to(a.global_position)
-		if nearest == null || distance < nearestDist: 
-			nearest = a
+		var distance = from.distance_to(a.global_position)
+		if n == null || distance < nearestDist: 
+			n = a
 			nearestDist = distance
-	return nearest
+	return n
 
 
 func rotateTowardVelocityVector(delta, factor := 0.001): 
