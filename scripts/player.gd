@@ -46,8 +46,8 @@ func setBeamTarget(node: Node2D):
 func _draw(): 
 	draw_set_transform_matrix(get_global_transform().affine_inverse())
 	
-	if(nearest): draw_circle(nearest.global_position, 100.0, Color.DARK_SLATE_GRAY)
-	if(target != null): draw_circle(target.global_position, 75.0, Color.DODGER_BLUE)
+	if(nearest): draw_circle(nearest.global_position, 80.0, Color.GREEN, false)
+	if(target != null): draw_circle(target.global_position, 60.0, Color.DODGER_BLUE, false)
 
 
 func _process(delta):
