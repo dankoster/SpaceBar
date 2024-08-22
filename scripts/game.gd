@@ -33,6 +33,7 @@ func _ready():
 	Events.PlayerCollided.connect(onPlayerCollided)
 	get_viewport().connect("size_changed", initLayout)
 	$Player/Camera2D.ignore_rotation = true
+
 	initLayout(15)
 
 
@@ -45,10 +46,38 @@ func _process(_delta):
 func _physics_process(_delta):
 
 	var camera_viewport_size = get_canvas_transform().affine_inverse().basis_xform(get_viewport_rect().size)
-	camera_rect = Rect2($Player.global_position - (0.5 * camera_viewport_size),  camera_viewport_size).grow(-200)
+	camera_rect = Rect2($Player.global_position - (0.5 * camera_viewport_size),  camera_viewport_size).grow(-600)
+
+	visibleSectors = findSectorsInRect(camera_rect, sectorSize)
 	queue_redraw()
 
-	print($Player.position)
+
+# Find all sectors touching the specified rect. Sectors are cells
+# of the specified size in an infinite grid starting at (0,0).
+static func findSectorsInRect(rect: Rect2, size: int = 1000) -> PackedVector2Array: 
+	var result := PackedVector2Array()
+
+	#calc rectangle edges, offset on the top/left
+	var x := int(rect.position.x) - size
+	var y := int(rect.position.y) - size
+	var x2 := int(rect.position.x + rect.size.x)
+	var y2 := int(rect.position.y + rect.size.y)
+
+	#calc nearest sector edges
+	var startX := x - (x % size) 
+	var startY := y - (y % size)
+	var endX := x2 - (x2 % size) + size
+	var endY := y2 - (y2 % size) + size
+
+	var edgeX := startX
+	while(edgeX < endX):
+		var edgeY := startY
+		while(edgeY < endY):
+			result.append(Vector2(edgeX, edgeY))
+			edgeY += size
+		edgeX += size
+
+	return result
 
 
 func addZoom(value: float) -> void:
@@ -59,41 +88,44 @@ func addZoom(value: float) -> void:
 	tween.tween_property($Player/Camera2D, "zoom", newZoom, 0.2).from(curZoom)
 	await tween.finished
 
-
+var visibleSectors: PackedVector2Array
 var sectors := {}
 var rng := RandomNumberGenerator.new()
-var cell_size: float = 1000.0
-var grid_origin: Vector2 = Vector2(0.0,0.0)
+var sectorSize: int = 500
+var grid_origin: Vector2 = Vector2(0,0)
 var cell_count: int = 6
 var camera_rect: Rect2
+@onready var default_font = ThemeDB.fallback_font
+@onready var default_font_size = ThemeDB.fallback_font_size * 2
+
+
 
 func _draw() -> void:
-	if cell_size == 0:
-		return
+	var player_containing_rect: Rect2
+	for s in visibleSectors: 
+		var sectorRect := Rect2(s, Vector2(sectorSize, sectorSize))
+		if sectorRect.has_point($Player.position): 
+			player_containing_rect = sectorRect
+		else:
+			draw_rect(sectorRect, Color.ALICE_BLUE, false)
+			debugString(str(sectorRect.position), sectorRect.position)
 
-	var position_origin := grid_origin * cell_size
+	draw_rect(player_containing_rect, Color.RED, false)
+	debugString(str(player_containing_rect.position), player_containing_rect.position)
 
-	var half_cell_count := int(cell_count / 2.0)
-	var half_cell_size := cell_size/2.0
+	var cameraRectIndicator = camera_rect
+	draw_rect(cameraRectIndicator, Color.GREEN, false)
+	debugString(str(cameraRectIndicator), cameraRectIndicator.position)
+
+	debugString(str(Vector2i($Player.position)), $Player.position + Vector2(20,20))
+
+
+
+func debugString(s: String, pos: Vector2): 
+	pos.y += default_font_size
+	draw_string(default_font, pos, s, HORIZONTAL_ALIGNMENT_LEFT, -1, default_font_size)
+
 	
-	for x in range(-half_cell_count, half_cell_count):
-		for y in range(-half_cell_count, half_cell_count):
-			var cell_rect := Rect2(
-				Vector2(
-					position_origin.x + x * cell_size - half_cell_size,
-					position_origin.y + y * cell_size - half_cell_size
-				),
-				Vector2(cell_size, cell_size)
-			)
-
-			var color = Color.RED if cell_rect.has_point($Player.position) else Color.SKY_BLUE
-			draw_rect(cell_rect, color, false)
-
-	draw_rect(camera_rect, Color.GREEN, false)
-
-
-
-
 func initLayout(numAsteroids: int):
 	var rect = get_viewport_rect()
 
