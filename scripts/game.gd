@@ -176,8 +176,8 @@ func generateAsteroids(area: Rect2, maxInSector: int, probability: float = 1) ->
 
 func onAsteroidHitBody(asteroid, target):
 	print('onAsteroidHitBody ' + str(asteroid) + " " + str(target))
-	asteroid.explode()
-	target.explode() #probably the player!
+	#asteroid.explode()
+	#target.explode() #probably the player!
 
 
 func onPlayerShotLaser(laser: Laser):
@@ -188,10 +188,11 @@ func onAsteroidExploded(asteroid: Asteroid):
 	score += asteroid.size * 100
 
 
-func onPlayerCollided(p: Player, collider):
+func onPlayerCollided(_p: Player, collider):
 	if(collider is Asteroid):
-		collider.explode(p.velocity)
-		p.explode()
+		print('player hit ' + str(collider))
+		# collider.explode(p.velocity)
+		# p.explode()
 
 
 func onPlayerDied(p: Player):
