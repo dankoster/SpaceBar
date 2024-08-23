@@ -73,7 +73,7 @@ func _physics_process(_delta):
 		if not sectors.has(sectorID):
 			# print('init sector' + str(sector))    
 			var rect = Rect2(sector,Vector2(sectorSize, sectorSize))  
-			var ast = generateAsteroids(rect, 1)
+			var ast = generateAsteroids(rect, 4, 0.25)
 			ast.map(func(a): asteroids.add_child(a))
 
 			sectors[sectorID] = {
@@ -81,7 +81,7 @@ func _physics_process(_delta):
 				"asteroids": ast
 			}
 	
-	queue_redraw()
+	# queue_redraw()
 
 
 # Find all sectors touching the specified rect. Sectors are cells
@@ -114,7 +114,7 @@ static func findSectorsInRect(rect: Rect2, size: int = 1000) -> PackedVector2Arr
 
 func addZoom(value: float) -> void:
 	var curZoom = $Player/Camera2D.zoom
-	var newZoomFactor = clamp(curZoom.x + value, 0.2, 2)
+	var newZoomFactor = clamp(curZoom.x + value, 0.1, 2)
 	var newZoom = Vector2(newZoomFactor, newZoomFactor)
 	var tween = create_tween()
 	tween.tween_property($Player/Camera2D, "zoom", newZoom, 0.2).from(curZoom)
@@ -122,26 +122,26 @@ func addZoom(value: float) -> void:
 
 
 
-func _draw() -> void:
-	# var player_containing_rect: Rect2
-	for s in visibleSectors: 
-		var sectorRect := Rect2(s, Vector2(sectorSize, sectorSize))
-		draw_rect(sectorRect, Color.DARK_GREEN, false)
+# func _draw() -> void:
+# 	# var player_containing_rect: Rect2
+# 	for s in visibleSectors: 
+# 		var sectorRect := Rect2(s, Vector2(sectorSize, sectorSize))
+# 		draw_rect(sectorRect, Color.DARK_GREEN, false)
 
-	# 	if sectorRect.has_point($Player.position): 
-	# 		player_containing_rect = sectorRect
-	# 	else:
-	# 		draw_rect(sectorRect, Color.DARK_GREEN, false)
-	# 		debugString(str(sectorRect.position), sectorRect.position)
+# 	# 	if sectorRect.has_point($Player.position): 
+# 	# 		player_containing_rect = sectorRect
+# 	# 	else:
+# 	# 		draw_rect(sectorRect, Color.DARK_GREEN, false)
+# 	# 		debugString(str(sectorRect.position), sectorRect.position)
 
-	# draw_rect(player_containing_rect, Color.RED, false)
-	# debugString(str(player_containing_rect.position), player_containing_rect.position)
+# 	# draw_rect(player_containing_rect, Color.RED, false)
+# 	# debugString(str(player_containing_rect.position), player_containing_rect.position)
 
-	# var cameraRectIndicator = camera_rect
-	# draw_rect(cameraRectIndicator, Color.GREEN, false)
-	# debugString(str(cameraRectIndicator), cameraRectIndicator.position)
+# 	# var cameraRectIndicator = camera_rect
+# 	# draw_rect(cameraRectIndicator, Color.GREEN, false)
+# 	# debugString(str(cameraRectIndicator), cameraRectIndicator.position)
 
-	debugString(str(Vector2i($Player.position)), $Player.position + Vector2(20,20))
+# 	debugString(str(Vector2i($Player.position)), $Player.position + Vector2(20,20))
 
 
 
@@ -156,24 +156,27 @@ func debugString(s: String, pos: Vector2):
 
 const rngSeed = "12345678"
 	
-func generateAsteroids(area: Rect2, numAsteroids: int) -> Array[Asteroid]:
+func generateAsteroids(area: Rect2, maxInSector: int, probability: float = 1) -> Array[Asteroid]:
+	assert(probability <= 1)
+
 	var result: Array[Asteroid] = []
 
 	rng.seed = hash(rngSeed + str(area))
 
 	#print('init asteroids layout ' + str(area))
-	for n in numAsteroids:
-		#random size between 1 and 3 becasue size 0 is "NONE" because of how the asteroid works internally
-		var randomSize = Asteroid.AsteroidSize.keys()[rng.randi_range(1, Asteroid.AsteroidSize.size() - 1)]
-		var a = asteroid_scene.instantiate()
-		a.global_position = Vector2(
-			rng.randf_range(area.position.x, area.position.x + area.size.x), 
-			rng.randf_range(area.position.y, area.position.y + area.size.y)
-		)
-		a.size = Asteroid.AsteroidSize[randomSize]
-		a.mass = Asteroid.AsteroidMass[Asteroid.AsteroidSize[randomSize]]
-		a.rotation = rng.randf_range(0, 2*PI)
-		result.append(a)
+	for n in maxInSector:
+		if probability >= rng.randf():
+			#random size between 1 and 3 becasue size 0 is "NONE" because of how the asteroid works internally
+			var randomSize = Asteroid.AsteroidSize.keys()[rng.randi_range(1, Asteroid.AsteroidSize.size() - 1)]
+			var a = asteroid_scene.instantiate()
+			a.global_position = Vector2(
+				rng.randf_range(area.position.x, area.position.x + area.size.x), 
+				rng.randf_range(area.position.y, area.position.y + area.size.y)
+			)
+			a.size = Asteroid.AsteroidSize[randomSize]
+			a.mass = Asteroid.AsteroidMass[Asteroid.AsteroidSize[randomSize]]
+			a.rotation = rng.randf_range(0, 2*PI)
+			result.append(a)
 
 	return result
 
