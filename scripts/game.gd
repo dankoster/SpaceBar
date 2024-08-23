@@ -58,16 +58,16 @@ static func findSectorsInRect(rect: Rect2, size: int = 1000) -> PackedVector2Arr
 	var result := PackedVector2Array()
 
 	#calc rectangle edges, offset on the top/left
-	var x := int(rect.position.x) - size
-	var y := int(rect.position.y) - size
+	var x := int(rect.position.x)
+	var y := int(rect.position.y)
 	var x2 := int(rect.position.x + rect.size.x)
 	var y2 := int(rect.position.y + rect.size.y)
 
 	#calc nearest sector edges
-	var startX := x - (x % size) 
-	var startY := y - (y % size)
-	var endX := x2 - (x2 % size) + size
-	var endY := y2 - (y2 % size) + size
+	var startX := x - (x % size) - (size if(x < 0) else 0)
+	var startY := y - (y % size) - (size if(y < 0) else 0)
+	var endX := x2 - (x2 % size) + (size if(x2 > 0) else 0)
+	var endY := y2 - (y2 % size) + (size if(y2 > 0) else 0)
 
 	var edgeX := startX
 	while(edgeX < endX):
