@@ -26,9 +26,8 @@ var score := 0:
 var visibleSectors: PackedVector2Array
 var sectors := {}
 var rng := RandomNumberGenerator.new()
-var sectorSize: int = 500
-var grid_origin: Vector2 = Vector2(0,0)
-var cell_count: int = 6
+const rngSeed = "12345678"
+const sectorSize: int = 500
 var camera_rect: Rect2
 
 
@@ -42,7 +41,6 @@ func _ready():
 	Events.connect("AsteroidExploded", onAsteroidExploded)
 	Events.connect("AsteroidHitBody", onAsteroidHitBody)
 	Events.PlayerCollided.connect(onPlayerCollided)
-	# get_viewport().connect("size_changed", initLayout)
 	$Player/Camera2D.ignore_rotation = true
 
 
@@ -153,8 +151,6 @@ func debugString(s: String, pos: Vector2):
 #playerSpawn.global_position = rect.size/2
 #player.global_position = playerSpawn.global_position
 
-const rngSeed = "12345678"
-	
 func generateAsteroids(area: Rect2, maxInSector: int, probability: float = 1) -> Array[Asteroid]:
 	assert(probability <= 1)
 
@@ -162,7 +158,6 @@ func generateAsteroids(area: Rect2, maxInSector: int, probability: float = 1) ->
 
 	rng.seed = hash(rngSeed + str(area))
 
-	#print('init asteroids layout ' + str(area))
 	for n in maxInSector:
 		if probability >= rng.randf():
 			#random size between 1 and 3 becasue size 0 is "NONE" because of how the asteroid works internally
