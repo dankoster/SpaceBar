@@ -54,19 +54,18 @@ func _process(_delta):
 
 func _physics_process(_delta):
 	var camera_viewport_size = get_canvas_transform().affine_inverse().basis_xform(get_viewport_rect().size)
-	#var camera_viewport_size = Vector2(900,900)
-	camera_rect = Rect2($Player.global_position - (0.5 * camera_viewport_size),  camera_viewport_size) #.grow(-600)
+	camera_rect = Rect2($Player.global_position - (0.5 * camera_viewport_size),  camera_viewport_size)
 	visibleSectors = findSectorsInRect(camera_rect, sectorSize)
 
-	for id in sectors.keys():
-		var pos: Vector2 = sectors[id]["rect"].position
-		if not visibleSectors.has(pos):
-			#print('free sector: ' + id, sectors[id])
-			for asteroid in sectors[id].asteroids:
-				if asteroid != null and !asteroid.is_queued_for_deletion():
-					asteroid.queue_free()
+	# for id in sectors.keys():
+	# 	var pos: Vector2 = sectors[id]["rect"].position
+	# 	if not visibleSectors.has(pos):
+	# 		print('free sector: ' + id, sectors[id])
+	# 		for asteroid in sectors[id].asteroids:
+	# 			if asteroid != null and !asteroid.is_queued_for_deletion():
+	# 				asteroid.queue_free()
 
-			sectors.erase(id)
+	# 		sectors.erase(id)
 
 	for sector in visibleSectors:
 		var sectorID := str(sector)
