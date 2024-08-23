@@ -8,6 +8,8 @@ var asteroid_scene = preload("res://scenes/asteroid.tscn")
 @onready var hud = $UI/HUD
 @onready var gameOver = $UI/GameOverScreen
 @onready var playerSpawn = $PlayerSpawn
+@onready var default_font = ThemeDB.fallback_font
+@onready var default_font_size = ThemeDB.fallback_font_size * 2
 
 var lives := 3: 
 	set(value): 
@@ -21,6 +23,15 @@ var score := 0:
 		hud.score = value
 
 
+var visibleSectors: PackedVector2Array
+var sectors := {}
+var rng := RandomNumberGenerator.new()
+var sectorSize: int = 500
+var grid_origin: Vector2 = Vector2(0,0)
+var cell_count: int = 6
+var camera_rect: Rect2
+
+
 func _ready(): 
 	gameOver.visible = false
 	score = 0
@@ -31,10 +42,8 @@ func _ready():
 	Events.connect("AsteroidExploded", onAsteroidExploded)
 	Events.connect("AsteroidHitBody", onAsteroidHitBody)
 	Events.PlayerCollided.connect(onPlayerCollided)
-	get_viewport().connect("size_changed", initLayout)
+	# get_viewport().connect("size_changed", initLayout)
 	$Player/Camera2D.ignore_rotation = true
-
-	initLayout(15)
 
 
 func _process(_delta):
@@ -44,11 +53,34 @@ func _process(_delta):
 
 
 func _physics_process(_delta):
-
 	var camera_viewport_size = get_canvas_transform().affine_inverse().basis_xform(get_viewport_rect().size)
-	camera_rect = Rect2($Player.global_position - (0.5 * camera_viewport_size),  camera_viewport_size).grow(-600)
-
+	#var camera_viewport_size = Vector2(900,900)
+	camera_rect = Rect2($Player.global_position - (0.5 * camera_viewport_size),  camera_viewport_size) #.grow(-600)
 	visibleSectors = findSectorsInRect(camera_rect, sectorSize)
+
+	for id in sectors.keys():
+		var pos: Vector2 = sectors[id]["rect"].position
+		if not visibleSectors.has(pos):
+			#print('free sector: ' + id, sectors[id])
+			for asteroid in sectors[id].asteroids:
+				if asteroid != null and !asteroid.is_queued_for_deletion():
+					asteroid.queue_free()
+
+			sectors.erase(id)
+
+	for sector in visibleSectors:
+		var sectorID := str(sector)
+		if not sectors.has(sectorID):
+			# print('init sector' + str(sector))    
+			var rect = Rect2(sector,Vector2(sectorSize, sectorSize))  
+			var ast = generateAsteroids(rect, 1)
+			ast.map(func(a): asteroids.add_child(a))
+
+			sectors[sectorID] = {
+				"rect": rect,
+				"asteroids": ast
+			}
+	
 	queue_redraw()
 
 
@@ -88,34 +120,26 @@ func addZoom(value: float) -> void:
 	tween.tween_property($Player/Camera2D, "zoom", newZoom, 0.2).from(curZoom)
 	await tween.finished
 
-var visibleSectors: PackedVector2Array
-var sectors := {}
-var rng := RandomNumberGenerator.new()
-var sectorSize: int = 500
-var grid_origin: Vector2 = Vector2(0,0)
-var cell_count: int = 6
-var camera_rect: Rect2
-@onready var default_font = ThemeDB.fallback_font
-@onready var default_font_size = ThemeDB.fallback_font_size * 2
-
 
 
 func _draw() -> void:
-	var player_containing_rect: Rect2
+	# var player_containing_rect: Rect2
 	for s in visibleSectors: 
 		var sectorRect := Rect2(s, Vector2(sectorSize, sectorSize))
-		if sectorRect.has_point($Player.position): 
-			player_containing_rect = sectorRect
-		else:
-			draw_rect(sectorRect, Color.ALICE_BLUE, false)
-			debugString(str(sectorRect.position), sectorRect.position)
+		draw_rect(sectorRect, Color.DARK_GREEN, false)
 
-	draw_rect(player_containing_rect, Color.RED, false)
-	debugString(str(player_containing_rect.position), player_containing_rect.position)
+	# 	if sectorRect.has_point($Player.position): 
+	# 		player_containing_rect = sectorRect
+	# 	else:
+	# 		draw_rect(sectorRect, Color.DARK_GREEN, false)
+	# 		debugString(str(sectorRect.position), sectorRect.position)
 
-	var cameraRectIndicator = camera_rect
-	draw_rect(cameraRectIndicator, Color.GREEN, false)
-	debugString(str(cameraRectIndicator), cameraRectIndicator.position)
+	# draw_rect(player_containing_rect, Color.RED, false)
+	# debugString(str(player_containing_rect.position), player_containing_rect.position)
+
+	# var cameraRectIndicator = camera_rect
+	# draw_rect(cameraRectIndicator, Color.GREEN, false)
+	# debugString(str(cameraRectIndicator), cameraRectIndicator.position)
 
 	debugString(str(Vector2i($Player.position)), $Player.position + Vector2(20,20))
 
@@ -126,25 +150,32 @@ func debugString(s: String, pos: Vector2):
 	draw_string(default_font, pos, s, HORIZONTAL_ALIGNMENT_LEFT, -1, default_font_size)
 
 	
-func initLayout(numAsteroids: int):
-	var rect = get_viewport_rect()
+# var rect = get_viewport_rect()
+#playerSpawn.global_position = rect.size/2
+#player.global_position = playerSpawn.global_position
 
-	rng.seed = hash("12345678")
-
-	#playerSpawn.global_position = rect.size/2
-	#player.global_position = playerSpawn.global_position
+const rngSeed = "12345678"
 	
-	print('init asteroids layout ' + str(rect))
+func generateAsteroids(area: Rect2, numAsteroids: int) -> Array[Asteroid]:
+	var result: Array[Asteroid] = []
+
+	rng.seed = hash(rngSeed + str(area))
+
+	#print('init asteroids layout ' + str(area))
 	for n in numAsteroids:
 		#random size between 1 and 3 becasue size 0 is "NONE" because of how the asteroid works internally
 		var randomSize = Asteroid.AsteroidSize.keys()[rng.randi_range(1, Asteroid.AsteroidSize.size() - 1)]
 		var a = asteroid_scene.instantiate()
-		a.global_position = Vector2(rng.randf_range(0, rect.size.x), rng.randf_range(0, rect.size.y))
+		a.global_position = Vector2(
+			rng.randf_range(area.position.x, area.position.x + area.size.x), 
+			rng.randf_range(area.position.y, area.position.y + area.size.y)
+		)
 		a.size = Asteroid.AsteroidSize[randomSize]
 		a.mass = Asteroid.AsteroidMass[Asteroid.AsteroidSize[randomSize]]
 		a.rotation = rng.randf_range(0, 2*PI)
-		asteroids.add_child(a)
+		result.append(a)
 
+	return result
 
 func onAsteroidHitBody(asteroid, target):
 	print('onAsteroidHitBody ' + str(asteroid) + " " + str(target))
