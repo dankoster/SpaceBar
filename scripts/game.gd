@@ -70,7 +70,7 @@ func _physics_process(_delta):
 		if not sectors.has(sectorID):
 			# print('init sector' + str(sector))    
 			var rect = Rect2(sector,Vector2(sectorSize, sectorSize))  
-			var ast = generateAsteroids(rect, 4, 0.25)
+			var ast = generateAsteroids(rect, 5, 0.2)
 			ast.map(func(a): asteroids.add_child(a))
 
 			sectors[sectorID] = {
