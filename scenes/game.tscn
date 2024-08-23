@@ -34,7 +34,6 @@ shape = SubResource("CircleShape2D_52xjr")
 [node name="Lasers" type="Node" parent="."]
 
 [node name="Player" parent="." instance=ExtResource("1_wvhut")]
-position = Vector2(1382, 813)
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 visible = false
