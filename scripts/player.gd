@@ -114,9 +114,10 @@ func tetherToTarget():
 		
 	#shorten the tether if we're approaching the target so we don't go past and bounce
 	elif length < tetherLength:	
+		velocity += velocity * 0.01 #add a little velocity as the tether is pulling in
 		tetherLength = length
 	
-	$DampedSpringJoint2D.look_at(target.global_position)
+	#$DampedSpringJoint2D.look_at(target.global_position)
 
 
 func shoot_laser(): 
