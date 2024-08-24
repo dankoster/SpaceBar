@@ -11,7 +11,6 @@ const AsteroidMass = {
 }
 
 @export var size := AsteroidSize.LARGE
-
 @onready var sprite = $Sprite2D
 @onready var cshape = $CollisionShape2D
 
@@ -46,8 +45,6 @@ func spawnSiblingInParent(siblingSize: AsteroidSize, velocity: Vector2, newMass:
 
 
 func _ready():	
-	# rotation = randf_range(0, 2*PI)
-
 	match size:
 		AsteroidSize.LARGE:
 			speed = randf_range(50, 100)
@@ -61,31 +58,6 @@ func _ready():
 			speed = randf_range(150, 200)
 			sprite.texture = preload("res://assets/meteorGrey_small1.png")
 			cshape.shape = preload("res://resources/asteroid_small_cshape.tres")
-
-
-#func _physics_process(_delta):
-	#global_position += movementVector.rotated(rotation) * speed * delta
-	
-	#teleoprt to the other side of the screen when you go off the edge
-	#var radius = cshape.shape.radius
-	#var screenSize = get_viewport_rect().size
-	#if global_position.y + radius < 0: 
-		#global_position.y = screenSize.y + radius
-	#elif global_position.y - radius > screenSize.y:
-		#global_position.y = 0 - radius
-	#
-	#if global_position.x + radius < 0: 
-		#global_position.x = screenSize.x + radius
-	#elif global_position.x - radius > screenSize.x:
-		#global_position.x = 0 - radius
-
-func _on_area_entered(area):
-	if(area is Laser):
-		area.queue_free()
-		explode(Vector2.ZERO)
-	else:
-		Events.AsteroidHitArea.emit(self, area)
-
 
 func _on_area_2d_body_entered(body):
 	Events.AsteroidHitBody.emit(self, body)

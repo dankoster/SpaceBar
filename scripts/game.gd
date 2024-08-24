@@ -78,7 +78,19 @@ func _physics_process(_delta):
 				"asteroids": ast
 			}
 	
-	# queue_redraw()
+	queue_redraw()
+
+
+func _draw() -> void:
+	#draw background grid
+	for s in visibleSectors: 
+		var sectorRect := Rect2(s, Vector2(sectorSize, sectorSize))
+		draw_rect(sectorRect, Color.html("#00ff0010"), false)
+
+	# var cameraRectIndicator = camera_rect
+	# draw_rect(cameraRectIndicator, Color.GREEN, false)
+	# debugString(str(cameraRectIndicator), cameraRectIndicator.position)
+	# debugString(str(Vector2i($Player.position)), $Player.position + Vector2(20,20))
 
 
 # Find all sectors touching the specified rect. Sectors are cells
@@ -118,30 +130,6 @@ func addZoom(value: float) -> void:
 	await tween.finished
 
 
-
-# func _draw() -> void:
-	# var player_containing_rect: Rect2
-	# for s in visibleSectors: 
-	# 	var sectorRect := Rect2(s, Vector2(sectorSize, sectorSize))
-	# 	draw_rect(sectorRect, Color.html("#00ff0020"), false)
-
-	# 	if sectorRect.has_point($Player.position): 
-	# 		player_containing_rect = sectorRect
-	# 	else:
-	# 		draw_rect(sectorRect, Color.DARK_GREEN, false)
-	# 		debugString(str(sectorRect.position), sectorRect.position)
-
-	# draw_rect(player_containing_rect, Color.RED, false)
-	# debugString(str(player_containing_rect.position), player_containing_rect.position)
-
-	# var cameraRectIndicator = camera_rect
-	# draw_rect(cameraRectIndicator, Color.GREEN, false)
-	# debugString(str(cameraRectIndicator), cameraRectIndicator.position)
-
-	# debugString(str(Vector2i($Player.position)), $Player.position + Vector2(20,20))
-
-
-
 func debugString(s: String, pos: Vector2): 
 	pos.y += default_font_size
 	draw_string(default_font, pos, s, HORIZONTAL_ALIGNMENT_LEFT, -1, default_font_size)
@@ -173,6 +161,7 @@ func generateAsteroids(area: Rect2, maxInSector: int, probability: float = 1) ->
 			result.append(a)
 
 	return result
+
 
 func onAsteroidHitBody(asteroid, target):
 	print('onAsteroidHitBody ' + str(asteroid) + " " + str(target))
