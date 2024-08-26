@@ -158,6 +158,11 @@ func generateAsteroids(area: Rect2, maxInSector: int, probability: float = 1) ->
 			a.size = Asteroid.AsteroidSize[randomSize]
 			a.mass = Asteroid.AsteroidMass[Asteroid.AsteroidSize[randomSize]]
 			a.rotation = rng.randf_range(0, 2*PI)
+
+			#Generate asteroid payload from a table of materials
+			var randomMaterial = Materials.getRandomMaterial(rng)
+			a.payload[randomMaterial.material] = randomMaterial.amount
+
 			result.append(a)
 
 	return result

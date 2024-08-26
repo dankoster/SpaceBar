@@ -11,10 +11,13 @@ signal spawned(player)
 	get(): return $CanvasLayer/FuelGauge.value
 	set(value): $CanvasLayer/FuelGauge.value = value
 
+var cargo := {}
+
 @onready var gun = $Gun
 @onready var sprite = $Sprite2D
 @onready var explodeSound = $Explode
 @onready var laserSound = $Laser
+@onready var cargoProgress = $CanvasLayer/CargoHold
 
 var laser_scene = preload("res://scenes/laser.tscn")
 
@@ -29,25 +32,24 @@ var moveAxis: float = 0.0
 var recalculateNearest: float = 0
 
 
-func setBeamTarget(node: Node2D): 
-	if(node):
+func setBeamTarget(node: Node2D):
+	if (node):
 		target = node
 		$Line2D.add_point(global_position)
 		$Line2D.add_point(target.global_position)
 		tetherLength = global_position.distance_to(target.global_position)
-		# print(str(Time.get_ticks_msec()) + " ---- LASER! ----> " + str(target.name) + " " + str(target.mass))
 	else:
 		$DampedSpringJoint2D.node_b = ""
-		tetherLength = 0.0 
+		tetherLength = 0.0
 		target = null
 		$Line2D.clear_points()
-		# print(str(Time.get_ticks_msec()) + ' ------------------')
 
-func _draw(): 
+
+func _draw():
 	draw_set_transform_matrix(get_global_transform().affine_inverse())
 	
-	if(nearest != null): draw_circle(nearest.global_position, 80.0, Color.GREEN, false)
-	if(target != null): draw_circle(target.global_position, 60.0, Color.DODGER_BLUE, false)
+	if (nearest != null): draw_circle(nearest.global_position, 80.0, Color.GREEN, false)
+	if (target != null): draw_circle(target.global_position, 60.0, Color.DODGER_BLUE, false)
 
 
 func _process(delta):
@@ -55,14 +57,14 @@ func _process(delta):
 	
 	#recalculate nearest body every n-seconds
 	recalculateNearest += delta
-	if(recalculateNearest >= 0.01): 
+	if (recalculateNearest >= 0.01):
 		recalculateNearest = 0.0
 		nearest = nearestNode(global_position, get_parent().asteroids.get_children())
 		queue_redraw()
 	
 	moveAxis = Input.get_axis("move_forward", "move_backward")
-	if(moveAxis != 0):
-		if(fuel > 0): fuel -= (20 * delta)
+	if (moveAxis != 0):
+		if (fuel > 0): fuel -= (20 * delta)
 		else: moveAxis = 0
 	
 	if Input.is_action_just_pressed("shoot"): setBeamTarget(nearest)
@@ -82,10 +84,11 @@ func _physics_process(delta):
 	rotateTowardVelocityVector(delta, 0.01)
 
 	if target:
-		tetherToTarget()
 		$Line2D.set_point_position(0, global_position)
 		$Line2D.set_point_position(1, target.global_position)
-		queue_redraw()
+		tetherToTarget()
+		if target is Asteroid:
+			harvestFromTarget(target)
 		
 	var collision = move_and_collide(velocity)
 	if collision:
@@ -96,13 +99,35 @@ func _physics_process(delta):
 		Events.PlayerCollided.emit(self, collider)
 
 
+func harvestFromTarget(asteroid: Asteroid):
+	for kind in asteroid.payload:
+		var amount = target.minePayload(kind, 0.1)
+		addCargo(kind, amount)
+
+
+func addCargo(kind: String, amount: float = 0.1):
+	# $CanvasLayer/CargoHold.value = cargo[kind]
+	if !cargo.has(kind): 
+		var pb = ProgressBar.new()
+		pb.value = amount
+		pb.name = kind
+		cargoProgress.add_child(pb)
+		cargo[kind] = {
+			"amount": amount,
+			"pb": pb
+		}
+	else: 
+		cargo[kind].amount += amount
+		cargo[kind].pb.value = cargo[kind].amount
+		
+
 func tetherToTarget():
 	assert(target.global_position, "invalid target!")
 	
 	#constrain position and direction
 	var targetToSelf = global_position - target.global_position
 	var length = targetToSelf.length()
-	if length > tetherLength: 
+	if length > tetherLength:
 		#turn the velocity vecrtor toward the target (effectively collide with
 		# a virtual sphere around the target
 		var normalToTarget = global_position.direction_to(target.global_position)
@@ -110,17 +135,19 @@ func tetherToTarget():
 		
 		#rotate in the direction of travel
 		rotation = velocity.orthogonal().rotated(deg_to_rad(180)).angle()
+		
+		#TODO: replace spring with actual physics calculation to move the target
 		$DampedSpringJoint2D.node_b = target.get_path()
 		
 	#shorten the tether if we're approaching the target so we don't go past and bounce
-	elif length < tetherLength:	
-		velocity += velocity * 0.01 #add a little velocity as the tether is pulling in
+	elif length < tetherLength:
+		velocity += velocity * 0.01 # add a little velocity as the tether is pulling in
 		tetherLength = length
 	
-	#$DampedSpringJoint2D.look_at(target.global_position)
+	$DampedSpringJoint2D.look_at(target.global_position)
 
 
-func shoot_laser(): 
+func shoot_laser():
 	assert(isAlive, "tried to shoot a laser while !isAlive")
 	var l = laser_scene.instantiate()
 	l.global_position = gun.global_position
@@ -134,13 +161,13 @@ static func nearestNode(from: Vector2, nodes: Array[Node]) -> Node:
 	var nearestDist: float
 	for a in nodes:
 		var distance = from.distance_to(a.global_position)
-		if n == null || distance < nearestDist: 
+		if n == null || distance < nearestDist:
 			n = a
 			nearestDist = distance
 	return n
 
 
-func rotateTowardVelocityVector(delta, factor := 0.001): 
+func rotateTowardVelocityVector(delta, factor := 0.001):
 	if elapsed < 1:
 		var targetAngle = velocity.angle() + deg_to_rad(90)
 		rotation = lerp_angle(rotation, targetAngle, elapsed)
@@ -149,7 +176,7 @@ func rotateTowardVelocityVector(delta, factor := 0.001):
 		var targetVector = Vector2.from_angle(rotation)
 		var vNorm = velocity.normalized()
 		var angleDiff = vNorm.dot(targetVector)
-		if(abs(angleDiff) < 0.01):
+		if (abs(angleDiff) < 0.01):
 			#print(str(Time.get_ticks_msec()) + " done correcting direction of travel:" + str(dot))
 			elapsed = 1.0
 

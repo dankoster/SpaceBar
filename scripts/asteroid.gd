@@ -10,9 +10,24 @@ const AsteroidMass = {
 	Asteroid.AsteroidSize.SMALL: 1
 }
 
-@export var size := AsteroidSize.LARGE
 @onready var sprite = $Sprite2D
 @onready var cshape = $CollisionShape2D
+
+@export var size := AsteroidSize.LARGE
+@export var payload := {}
+
+
+func minePayload(kind: String, amount: float) -> float:
+	var amountMined := 0.0
+	if payload[kind] > 0:
+		if payload[kind] >= amount:
+			payload[kind] -= amount
+			amountMined = amount
+		else: #get the remainder
+			amountMined = payload[kind]
+			payload.erase(kind) 
+
+	return amountMined
 
 func explode(velocity: Vector2):
 	var vel1 = velocity.orthogonal() * 100
