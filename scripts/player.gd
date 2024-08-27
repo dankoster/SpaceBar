@@ -18,6 +18,7 @@ var cargo := {}
 @onready var explodeSound = $Explode
 @onready var laserSound = $Laser
 @onready var cargoProgress = $CanvasLayer/CargoHold
+@onready var cargoGrid = $CanvasLayer/GridContainer
 
 var laser_scene = preload("res://scenes/laser.tscn")
 
@@ -111,7 +112,10 @@ func addCargo(kind: String, amount: float = 0.1):
 		var pb = ProgressBar.new()
 		pb.value = amount
 		pb.name = kind
-		cargoProgress.add_child(pb)
+		var label = Label.new()
+		label.text = kind
+		pb.add_child(label)
+		cargoProgress.add_child(pb)		
 		cargo[kind] = {
 			"amount": amount,
 			"pb": pb
