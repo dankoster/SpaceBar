@@ -11,6 +11,10 @@
 
 [node name="Station" type="RigidBody2D"]
 
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+visible = false
+polygon = PackedVector2Array(-272, -172, -506, -175, -505, 173, -275, 174, -199, 217, -106, 338, 47, 298, 165, 316, 348, 554, 180, 696, 238, 773, 398, 651, 498, 769, 591, 697, 494, 581, 683, 434, 620, 360, 432, 503, 242, 249, 281, 178, 393, 180, 392, -175, 280, -177, 276, -299, 198, -432, 43, -405, 10, -229, -102, -176, -354, -573, -384, -696, -542, -682, -588, -525, -489, -477, -228, -229)
+
 [node name="Tower" type="Sprite2D" parent="."]
 position = Vector2(0, -0.999939)
 rotation = -0.673607
@@ -70,6 +74,3 @@ offset = Vector2(0, -382)
 [node name="Panel4" type="Sprite2D" parent="Solar/Pylon1"]
 texture = ExtResource("8_wvqdr")
 offset = Vector2(0, -465)
-
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
-polygon = PackedVector2Array(-272, -172, -506, -175, -505, 173, -275, 174, -199, 217, -106, 338, 47, 298, 165, 316, 348, 554, 180, 696, 238, 773, 398, 651, 498, 769, 591, 697, 494, 581, 683, 434, 620, 360, 432, 503, 242, 249, 281, 178, 393, 180, 392, -175, 280, -177, 276, -299, 198, -432, 43, -405, 10, -229, -102, -176, -354, -573, -384, -696, -542, -682, -588, -525, -489, -477, -228, -229)

@@ -43,6 +43,8 @@ func _ready():
 	Events.PlayerCollided.connect(onPlayerCollided)
 	$Player/Camera2D.ignore_rotation = true
 
+	player.velocity = Vector2.from_angle(player.rotation).orthogonal() * 8
+     
 
 func _process(_delta):
 	if Input.is_action_just_pressed("reset"): get_tree().reload_current_scene()
@@ -78,14 +80,14 @@ func _physics_process(_delta):
 				"asteroids": ast
 			}
 	
-	queue_redraw()
+# 	queue_redraw()
 
 
-func _draw() -> void:
-	#draw background grid
-	for s in visibleSectors: 
-		var sectorRect := Rect2(s, Vector2(sectorSize, sectorSize))
-		draw_rect(sectorRect, Color.html("#00ff0010"), false)
+# func _draw() -> void:
+# 	#draw background grid
+# 	for s in visibleSectors: 
+# 		var sectorRect := Rect2(s, Vector2(sectorSize, sectorSize))
+# 		draw_rect(sectorRect, Color.html("#00ff0010"), false)
 
 	# var cameraRectIndicator = camera_rect
 	# draw_rect(cameraRectIndicator, Color.GREEN, false)

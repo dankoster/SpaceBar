@@ -22,9 +22,10 @@ script = ExtResource("1_njtx6")
 visible = false
 
 [node name="Station" parent="." instance=ExtResource("4_8ywe1")]
+position = Vector2(-674, -382)
 
 [node name="PlayerSpawn" type="Area2D" parent="."]
-position = Vector2(1637, 257)
+visible = false
 collision_mask = 12
 script = ExtResource("5_0du2r")
 
@@ -37,8 +38,7 @@ shape = SubResource("CircleShape2D_52xjr")
 [node name="Lasers" type="Node" parent="."]
 
 [node name="Player" parent="." instance=ExtResource("1_wvhut")]
-position = Vector2(678, 376)
-rotation = 0.876155
+rotation = 0.928515
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 ignore_rotation = false
