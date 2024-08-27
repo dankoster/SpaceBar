@@ -17,7 +17,7 @@ This is a semi-[roguelike](https://en.wikipedia.org/wiki/Roguelike) inspired by 
 ## WIP
 - [x] Procedurally generated infinite asteroids
 - [x] Tractor beam: swing around the asteroids like spiderman.
-- [ ] Home base: the Space Bar is on a big asteroid. Launch from here. 
+- [x] Home base: the Space Bar is on a big asteroid. Launch from here. 
 - [x] Mining: your tractor beam can pull stuff off asteroids.
 - [ ] Navigation: find what you're looking for and find your way home.
 - [ ] Missions: you need to find, collect, and return with specific things.
