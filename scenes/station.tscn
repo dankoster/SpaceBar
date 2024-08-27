@@ -1,0 +1,75 @@
+[gd_scene load_steps=9 format=3 uid="uid://dbeo8rph7mnhd"]
+
+[ext_resource type="Texture2D" uid="uid://derkl3mvwmh40" path="res://assets/spaceStation_020.png" id="1_7nkfx"]
+[ext_resource type="Texture2D" uid="uid://yql47gx5bse4" path="res://assets/spaceStation_026.png" id="2_mcyi1"]
+[ext_resource type="Texture2D" uid="uid://cyujjaeekipiq" path="res://assets/spaceStation_029.png" id="3_hjhs1"]
+[ext_resource type="Texture2D" uid="uid://bpvtulkkwxl0n" path="res://assets/spaceStation_028.png" id="4_2h6v1"]
+[ext_resource type="Texture2D" uid="uid://c4r7wgkem6awx" path="res://assets/spaceMeteors_001.png" id="5_px0th"]
+[ext_resource type="Texture2D" uid="uid://dxvh6hak5qtby" path="res://assets/spaceStation_021.png" id="6_b8w7e"]
+[ext_resource type="Texture2D" uid="uid://b0np1lef2ipur" path="res://assets/spaceStation_019.png" id="7_otmkm"]
+[ext_resource type="Texture2D" uid="uid://chxy78evknbv" path="res://assets/spaceStation_025.png" id="8_wvqdr"]
+
+[node name="Station" type="RigidBody2D"]
+
+[node name="Tower" type="Sprite2D" parent="."]
+position = Vector2(0, -0.999939)
+rotation = -0.673607
+texture = ExtResource("1_7nkfx")
+offset = Vector2(0, -500)
+
+[node name="Docks" type="Sprite2D" parent="."]
+rotation = 2.49233
+scale = Vector2(1, 1)
+texture = ExtResource("2_mcyi1")
+offset = Vector2(0, -515)
+
+[node name="Dome2" type="Sprite2D" parent="."]
+rotation = -2.84838
+scale = Vector2(1, 1)
+texture = ExtResource("3_hjhs1")
+offset = Vector2(0, -273)
+
+[node name="Tower2" type="Sprite2D" parent="."]
+rotation = -1.15366
+texture = ExtResource("4_2h6v1")
+offset = Vector2(285, 0)
+
+[node name="Dome" type="Sprite2D" parent="Tower2"]
+rotation = 1.57778
+texture = ExtResource("3_hjhs1")
+offset = Vector2(0, -395)
+
+[node name="Asteroid" type="Sprite2D" parent="."]
+texture = ExtResource("5_px0th")
+
+[node name="Solar" type="Node2D" parent="."]
+
+[node name="Pylon2" type="Sprite2D" parent="Solar"]
+rotation = 1.5708
+texture = ExtResource("6_b8w7e")
+offset = Vector2(0, -272)
+
+[node name="Panel2" type="Sprite2D" parent="Solar/Pylon2"]
+rotation = -3.14159
+texture = ExtResource("7_otmkm")
+offset = Vector2(0, 337)
+
+[node name="Pylon1" type="Sprite2D" parent="Solar"]
+rotation = -1.5708
+texture = ExtResource("6_b8w7e")
+offset = Vector2(0, -270)
+
+[node name="Panel1" type="Sprite2D" parent="Solar/Pylon1"]
+texture = ExtResource("8_wvqdr")
+offset = Vector2(0, -300)
+
+[node name="Panel3" type="Sprite2D" parent="Solar/Pylon1"]
+texture = ExtResource("8_wvqdr")
+offset = Vector2(0, -382)
+
+[node name="Panel4" type="Sprite2D" parent="Solar/Pylon1"]
+texture = ExtResource("8_wvqdr")
+offset = Vector2(0, -465)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(-272, -172, -506, -175, -505, 173, -275, 174, -199, 217, -106, 338, 47, 298, 165, 316, 348, 554, 180, 696, 238, 773, 398, 651, 498, 769, 591, 697, 494, 581, 683, 434, 620, 360, 432, 503, 242, 249, 281, 178, 393, 180, 392, -175, 280, -177, 276, -299, 198, -432, 43, -405, 10, -229, -102, -176, -354, -573, -384, -696, -542, -682, -588, -525, -489, -477, -228, -229)

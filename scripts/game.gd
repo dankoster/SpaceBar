@@ -182,7 +182,7 @@ func onAsteroidExploded(asteroid: Asteroid):
 	score += asteroid.size * 100
 
 
-func onPlayerCollided(_p: Player, collider):
+func onPlayerCollided(p: Player, collider):
 	if(collider is Asteroid):
 		print('player hit ' + str(collider))
 		# collider.explode(p.velocity)
