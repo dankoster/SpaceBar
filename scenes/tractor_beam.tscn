@@ -14,3 +14,6 @@ length = 300.0
 rest_length = 300.0
 stiffness = 10.0
 damping = 16.0
+
+[node name="Line2D" type="Line2D" parent="."]
+top_level = true

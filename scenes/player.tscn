@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://b7ehng3d3bhkr"]
+[gd_scene load_steps=9 format=3 uid="uid://b7ehng3d3bhkr"]
 
 [ext_resource type="Texture2D" uid="uid://bls4di7061nl5" path="res://assets/ship_F.png" id="1_3xx4j"]
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_6uvwm"]
 [ext_resource type="AudioStream" uid="uid://4ehfy880oa75" path="res://assets/sounds/impactMetal_003.wav" id="3_tmjgl"]
 [ext_resource type="AudioStream" uid="uid://cqqbrtq3yis56" path="res://assets/sounds/laserSmall_000.wav" id="4_nwwls"]
+[ext_resource type="PackedScene" uid="uid://do7elnhwjt6h1" path="res://scenes/tractor_beam.tscn" id="5_wog7w"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_7wdfs"]
 radius = 24.0416
@@ -25,7 +26,6 @@ scale = Vector2(0.5, 0.5)
 texture = ExtResource("1_3xx4j")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-visible = false
 shape = SubResource("CircleShape2D_7wdfs")
 
 [node name="Gun" type="Node2D" parent="."]
@@ -36,15 +36,7 @@ stream = ExtResource("3_tmjgl")
 [node name="Laser" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("4_nwwls")
 
-[node name="Line2D" type="Line2D" parent="."]
-top_level = true
-
-[node name="DampedSpringJoint2D" type="DampedSpringJoint2D" parent="."]
-node_a = NodePath("..")
-disable_collision = false
-length = 1.0
-rest_length = 1.0
-stiffness = 64.0
+[node name="TractorBeam" parent="." instance=ExtResource("5_wog7w")]
 
 [node name="PointLight2D" type="PointLight2D" parent="."]
 visible = false

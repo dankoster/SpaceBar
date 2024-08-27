@@ -28,22 +28,17 @@ var isAlive := true
 var target: PhysicsBody2D
 var nearest: PhysicsBody2D
 var elapsed := 1.0
-var tetherLength := 0.0
 var moveAxis: float = 0.0
 var recalculateNearest: float = 0
 
 
 func setBeamTarget(node: Node2D):
 	if (node):
+		$TractorBeam.setBeamTarget(node)
 		target = node
-		$Line2D.add_point(global_position)
-		$Line2D.add_point(target.global_position)
-		tetherLength = global_position.distance_to(target.global_position)
 	else:
-		$DampedSpringJoint2D.node_b = ""
-		tetherLength = 0.0
+		$TractorBeam.setBeamTarget(null)
 		target = null
-		$Line2D.clear_points()
 
 
 func _draw():
@@ -84,12 +79,8 @@ func _physics_process(delta):
 
 	rotateTowardVelocityVector(delta, 0.01)
 
-	if target:
-		$Line2D.set_point_position(0, global_position)
-		$Line2D.set_point_position(1, target.global_position)
-		tetherToTarget()
-		if target is Asteroid:
-			harvestFromTarget(target)
+	if target is Asteroid:
+		harvestFromTarget(target)
 		
 	var collision = move_and_collide(velocity)
 	if collision:
@@ -123,32 +114,6 @@ func addCargo(kind: String, amount: float = 0.1):
 	else: 
 		cargo[kind].amount += amount
 		cargo[kind].pb.value = cargo[kind].amount
-		
-
-func tetherToTarget():
-	assert(target.global_position, "invalid target!")
-	
-	#constrain position and direction
-	var targetToSelf = global_position - target.global_position
-	var length = targetToSelf.length()
-	if length > tetherLength:
-		#turn the velocity vecrtor toward the target (effectively collide with
-		# a virtual sphere around the target
-		var normalToTarget = global_position.direction_to(target.global_position)
-		velocity = velocity.slide(normalToTarget)
-		
-		#rotate in the direction of travel
-		rotation = velocity.orthogonal().rotated(deg_to_rad(180)).angle()
-		
-		#TODO: replace spring with actual physics calculation to move the target
-		$DampedSpringJoint2D.node_b = target.get_path()
-		
-	#shorten the tether if we're approaching the target so we don't go past and bounce
-	elif length < tetherLength:
-		velocity += velocity * 0.01 # add a little velocity as the tether is pulling in
-		tetherLength = length
-	
-	$DampedSpringJoint2D.look_at(target.global_position)
 
 
 func shoot_laser():
@@ -192,7 +157,6 @@ func explode():
 	setBeamTarget(null)
 	$CollisionShape2D.set_deferred("disabled", true)
 	velocity = Vector2.ZERO
-	setBeamTarget(null)
 	explodeSound.play()
 	died.emit(self)
 
