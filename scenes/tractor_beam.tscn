@@ -9,11 +9,11 @@ script = ExtResource("1_lyqrt")
 [node name="LaserBeam2D" parent="." instance=ExtResource("2_eeqrx")]
 
 [node name="DampedSpringJoint2D" type="DampedSpringJoint2D" parent="."]
-bias = 0.5
-length = 300.0
-rest_length = 300.0
-stiffness = 10.0
-damping = 16.0
+bias = 0.001
+length = 1.0
+rest_length = 1.0
+stiffness = 0.1
+damping = 0.01
 
 [node name="Line2D" type="Line2D" parent="."]
 top_level = true
