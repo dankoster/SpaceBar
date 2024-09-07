@@ -6,7 +6,7 @@
 [node name="NavPointer" type="Node2D"]
 script = ExtResource("1_3bf7k")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Pointer" type="Sprite2D" parent="."]
 self_modulate = Color(0.286275, 1, 0.286275, 0.462745)
 position = Vector2(202, 0)
 rotation = 1.57079

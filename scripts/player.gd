@@ -83,11 +83,8 @@ func _physics_process(delta):
 
 	rotateTowardVelocityVector(delta, 0.01)
 
-	if homePort != null:
-		$NavHome.look_at(homePort.global_position)
-
-	if navTarget != null:
-		$NavTarget.look_at(navTarget.global_position)
+	$NavHome.target = homePort
+	$NavTarget.target = navTarget
 
 	if target is Asteroid:
 		harvestFromTarget(target)
