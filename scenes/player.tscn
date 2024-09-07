@@ -1,10 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://b7ehng3d3bhkr"]
+[gd_scene load_steps=10 format=3 uid="uid://b7ehng3d3bhkr"]
 
-[ext_resource type="Texture2D" uid="uid://bls4di7061nl5" path="res://assets/ship_F.png" id="1_3xx4j"]
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_6uvwm"]
+[ext_resource type="Texture2D" uid="uid://dupoctb5dq3iu" path="res://assets/ships/ship_sidesA.png" id="2_13twy"]
 [ext_resource type="AudioStream" uid="uid://4ehfy880oa75" path="res://assets/sounds/impactMetal_003.wav" id="3_tmjgl"]
 [ext_resource type="AudioStream" uid="uid://cqqbrtq3yis56" path="res://assets/sounds/laserSmall_000.wav" id="4_nwwls"]
 [ext_resource type="PackedScene" uid="uid://do7elnhwjt6h1" path="res://scenes/tractor_beam.tscn" id="5_wog7w"]
+[ext_resource type="PackedScene" uid="uid://b5t2u4cn6fwg" path="res://scenes/NavPointer.tscn" id="6_pfouv"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_7wdfs"]
 radius = 24.0416
@@ -23,7 +24,7 @@ script = ExtResource("1_6uvwm")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 scale = Vector2(0.5, 0.5)
-texture = ExtResource("1_3xx4j")
+texture = ExtResource("2_13twy")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_7wdfs")
@@ -76,3 +77,9 @@ offset_top = -20.0
 offset_right = 286.0
 offset_bottom = 20.0
 grow_vertical = 2
+
+[node name="NavHome" parent="." instance=ExtResource("6_pfouv")]
+color = Color(0, 1, 0, 0.458824)
+
+[node name="NavTarget" parent="." instance=ExtResource("6_pfouv")]
+color = Color(1, 0, 0, 0.482353)

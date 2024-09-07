@@ -23,13 +23,11 @@ offset = Vector2(0, -500)
 
 [node name="Docks" type="Sprite2D" parent="."]
 rotation = 2.49233
-scale = Vector2(1, 1)
 texture = ExtResource("2_mcyi1")
 offset = Vector2(0, -515)
 
 [node name="Dome2" type="Sprite2D" parent="."]
 rotation = -2.84838
-scale = Vector2(1, 1)
 texture = ExtResource("3_hjhs1")
 offset = Vector2(0, -273)
 

@@ -36,6 +36,7 @@ func _ready():
 	score = 0
 	lives = 3
 	player.fuel = 100.0
+	player.homePort = $Station
 	player.connect("laser_shot", onPlayerShotLaser)
 	player.connect("died", onPlayerDied)
 	Events.connect("AsteroidExploded", onAsteroidExploded)
@@ -152,7 +153,7 @@ func generateAsteroids(area: Rect2, maxInSector: int, probability: float = 1) ->
 		if probability >= rng.randf():
 			#random size between 1 and 3 becasue size 0 is "NONE" because of how the asteroid works internally
 			var randomSize = Asteroid.AsteroidSize.keys()[rng.randi_range(1, Asteroid.AsteroidSize.size() - 1)]
-			var a = asteroid_scene.instantiate()
+			var a: Asteroid = asteroid_scene.instantiate()
 			a.global_position = Vector2(
 				rng.randf_range(area.position.x, area.position.x + area.size.x), 
 				rng.randf_range(area.position.y, area.position.y + area.size.y)

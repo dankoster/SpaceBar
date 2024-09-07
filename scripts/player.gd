@@ -4,6 +4,7 @@ signal laser_shot(laser)
 signal died(player)
 signal spawned(player)
 
+@export var homePort: Node2D = null
 @export var acceleration := 10.0
 @export var maxSpeed := 550
 @export var rotation_speed := 100.0
@@ -27,6 +28,7 @@ var shotRate := 0.15
 var isAlive := true
 var target: PhysicsBody2D
 var nearest: PhysicsBody2D
+var navTarget: Asteroid
 var elapsed := 1.0
 var moveAxis: float = 0.0
 var recalculateNearest: float = 0
@@ -55,7 +57,9 @@ func _process(delta):
 	recalculateNearest += delta
 	if (recalculateNearest >= 0.01):
 		recalculateNearest = 0.0
-		nearest = nearestNode(global_position, get_parent().asteroids.get_children())
+		var asteroids = get_parent().asteroids.get_children()
+		nearest = nearestNode(global_position, asteroids)
+		navTarget = nearestNode(global_position, asteroids, Materials.MaterialKind.EXPLODIUM)
 		queue_redraw()
 	
 	moveAxis = Input.get_axis("move_forward", "move_backward")
@@ -78,6 +82,12 @@ func _physics_process(delta):
 		velocity = velocity.limit_length(maxSpeed)
 
 	rotateTowardVelocityVector(delta, 0.01)
+
+	if homePort != null:
+		$NavHome.look_at(homePort.global_position)
+
+	if navTarget != null:
+		$NavTarget.look_at(navTarget.global_position)
 
 	if target is Asteroid:
 		harvestFromTarget(target)
@@ -125,14 +135,17 @@ func shoot_laser():
 	laser_shot.emit(l)
 
 
-static func nearestNode(from: Vector2, nodes: Array[Node]) -> Node:
+static func nearestNode(from: Vector2, nodes: Array[Node], payload = null) -> Node:
 	var n: Node2D = null
 	var nearestDist: float
+	var matNames := Materials.MaterialKind.keys() if payload is Materials.MaterialKind else []
+
 	for a in nodes:
-		var distance = from.distance_to(a.global_position)
-		if n == null || distance < nearestDist:
-			n = a
-			nearestDist = distance
+		if payload == null || (a.payload != null && a.payload.has(matNames[payload])):
+			var distance = from.distance_to(a.global_position)
+			if n == null || distance < nearestDist:
+				n = a
+				nearestDist = distance
 	return n
 
 
