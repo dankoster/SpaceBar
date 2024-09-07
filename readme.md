@@ -15,16 +15,23 @@ You have very little fuel for propulsion, but you can move by tethering to aster
 This is a semi-[roguelike](https://en.wikipedia.org/wiki/Roguelike) inspired by Asteroids, Pinball, Spiderman, [Noita](https://noitagame.com/), all the sci-fi books that feature space wizards, and the [Pirate Software game jam](https://itch.io/jam/pirate15) that got me started with the theme "Shadows and Alchemy".
 
 ## WIP
+I'm just adding basics which will each be enhanced later as needed. 
+
+[Try it on itch.io](https://dankoster.itch.io/spacebar?secret=Qr2GIztnWroXQ8vJsNairF87Yns)
+
 - [x] Procedurally generated infinite asteroids
 - [x] Tractor beam: swing around the asteroids like spiderman.
 - [x] Home base: the Space Bar is on a big asteroid. Launch from here. 
 - [x] Mining: your tractor beam can pull stuff off asteroids.
-- [ ] Navigation: find what you're looking for and find your way home.
+- [x] Materials: basic fuel gauge and cargo indicators to see what you've mined.
+- [x] Navigation: find what you're looking for and find your way home.
 - [ ] Missions: you need to find, collect, and return with specific things.
+- [ ] Targeting: need a way to designate navigation targets
 - [ ] Hazards: the odds of successfully navigating an asteroid field are 3,720 to 1.
 - [ ] Enemies: drunk wizards summon eldritch horrors and cause other assorted mischief
+- [ ] Upgrades: better tractor beam, shields, etc
 - [ ] Multiplayer
 
 ## Tech
 
-Godot v4.3.rc2.official [3978628c6] 
+Godot v4.3.stable.official [77dcf97d8]
