@@ -4,7 +4,7 @@ var tetherLength := 0.0
 var source: PhysicsBody2D
 var target: PhysicsBody2D
 
-@export var pullStrength = 0.01
+@export var pullStrength = 0.015 #velocity to add each frame if the length is 
 
 func _ready():
 	source = get_parent()
@@ -40,9 +40,12 @@ func _physics_process(_delta):
 			
 			#rotate in the direction of travel
 			source.rotation = source.velocity.orthogonal().rotated(deg_to_rad(180)).angle()
+			# if target is RigidBody2D:
+			# 	print('applyTorque', source.rotation)
+			# 	(target as RigidBody2D).apply_torque(1000)
 
 			#TODO: replace spring with force calculations for moving the target
-			$DampedSpringJoint2D.node_b = target.get_path()
+			# $DampedSpringJoint2D.node_b = target.get_path()
 			# if target is RigidBody2D:
 			# 	target.apply_impulse()
 			# 	target.apply_torque_impulse()
