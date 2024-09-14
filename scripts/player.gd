@@ -44,10 +44,11 @@ func setBeamTarget(node: Node2D):
 
 
 func _draw():
+	# Draw on the world's transform, not the player's transform.
 	draw_set_transform_matrix(get_global_transform().affine_inverse())
 	
 	if (nearest != null): draw_circle(nearest.global_position, 80.0, Color.GREEN, false)
-	if (target != null): draw_circle(target.global_position, 60.0, Color.DODGER_BLUE, false)
+	# if (target != null): draw_circle(target.global_position, 60.0, Color.DODGER_BLUE, false)
 
 
 func _process(delta):
