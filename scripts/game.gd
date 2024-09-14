@@ -29,7 +29,8 @@ var rng := RandomNumberGenerator.new()
 const rngSeed = "12345678"
 const sectorSize: int = 500
 var camera_rect: Rect2
-
+var spawn_rotation: float
+var spawn_veloicty: Vector2
 
 func _ready(): 
 	gameOver.visible = false
@@ -43,9 +44,10 @@ func _ready():
 	Events.connect("AsteroidHitBody", onAsteroidHitBody)
 	Events.PlayerCollided.connect(onPlayerCollided)
 	$Player/Camera2D.ignore_rotation = true
+	spawn_rotation = $Player.rotation
 
 	player.velocity = Vector2.from_angle(player.rotation).orthogonal() * 8
-     
+	spawn_veloicty = player.velocity
 
 func _process(_delta):
 	if Input.is_action_just_pressed("reset"): get_tree().reload_current_scene()
@@ -189,7 +191,7 @@ func onPlayerCollided(p: Player, collider):
 	if(collider is Asteroid):
 		print('player hit ' + str(collider))
 		# collider.explode(p.velocity)
-		# p.explode()
+		p.explode()
 
 
 func onPlayerDied(p: Player):
@@ -198,10 +200,21 @@ func onPlayerDied(p: Player):
 		await get_tree().create_timer(1).timeout
 		#while !playerSpawn.isEmpty:
 			#print('player spawn point is not empty')
-			#await get_tree().create_timer(0.5).timeout
-		
-		playerSpawn.global_position = get_viewport_rect().size/2
+			#await get_tree().create_timer(0.5).timeout		
+
+		# playerSpawn.global_position = get_viewport_rect().size/2
+
+		#respawn but wait for the camera to re-center on the player
+		var vis = VisibleOnScreenNotifier2D.new()
+		vis.screen_entered.connect(func(): 
+			#we can see the player again so start moving
+			p.rotation = spawn_rotation
+			p.velocity = spawn_veloicty
+			p.remove_child(vis)
+		)
+		p.add_child(vis)
 		p.respawn(playerSpawn.global_position)
+
 	else: 
 		await get_tree().create_timer(3).timeout 
 		gameOver.visible = true
